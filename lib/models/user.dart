@@ -21,5 +21,5 @@ class User {
     _eMail = value;
   }
 
-  User(this._userName, this._eMail, [this._photoURL]);
+  User({userName, eMail, photoURL});
 }

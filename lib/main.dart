@@ -1,44 +1,72 @@
 import 'package:flutter/material.dart';
-import 'package:todo/screens/login.dart';
+import 'package:provider/provider.dart';
+import 'package:todo/locator.dart';
+import 'package:todo/screens/home/home.dart';
+import 'package:todo/ui/colors.dart';
+import 'package:todo/viewModels/subjectVM.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  setupLocator();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
-  final Color grey = Color.fromRGBO(216, 216, 216, 1);
-  final Color kapaliMavi = Color.fromRGBO(53, 73, 94, 1);
+  final Color grey = UIColors.grey;
+  final Color kapaliMavi = UIColors.kapaliMavi;
+  final Color sheetTextColor = UIColors.addSubjectSheetTextColor;
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Yap',
-      theme: ThemeData(
-          fontFamily: "DavidLibre",
-          primaryColor: grey,
-          hintColor: grey,
-          cursorColor: grey,
-          textTheme: TextTheme(
-              display1: TextStyle(
-                color: grey,
-                fontSize: 18,
-              ),
-              display2: TextStyle(
-                color: kapaliMavi,
-                fontSize: 18,
-              )),
-          inputDecorationTheme: InputDecorationTheme(
-              labelStyle: TextStyle(color: grey, fontSize: 18),
-              border: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(20),
-                  ),
-                  borderSide: BorderSide(color: Colors.white)),
-              enabledBorder: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(20),
-                  ),
-                  borderSide: BorderSide(color: Colors.white)))),
-      home: LoginScreen(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => getIt.get<SubjectVM>(),
+        )
+      ],
+      child: MaterialApp(
+        title: 'Yap',
+        theme: buildThemeData(),
+        //home: LoginScreen(),
+        home: Home(),
+      ),
     );
+  }
+
+  ThemeData buildThemeData() {
+    return ThemeData(
+        fontFamily: "DavidLibre",
+        primaryColor: grey,
+        hintColor: grey,
+        cursorColor: grey,
+        textTheme: TextTheme(
+          //Test
+          body1: TextStyle(
+            color: sheetTextColor,
+            fontSize: 18,
+          ),
+          // end
+          display1: TextStyle(
+            color: grey,
+            fontSize: 18,
+          ),
+          display2: TextStyle(
+            color: kapaliMavi,
+            fontSize: 18,
+          ),
+          display3: TextStyle(color: sheetTextColor, fontSize: 16),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+            labelStyle: TextStyle(color: grey, fontSize: 18),
+            border: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(20),
+                ),
+                borderSide: BorderSide(color: Colors.white)),
+            enabledBorder: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(20),
+                ),
+                borderSide: BorderSide(color: Colors.white))));
   }
 }
 

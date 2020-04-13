@@ -7,6 +7,7 @@ class UserVM with ChangeNotifier {
   Durum _durum;
   User _user;
 
+
   Durum get durum => _durum;
 
   set durum(Durum value) {
@@ -22,4 +23,8 @@ class UserVM with ChangeNotifier {
   UserVM() {
     durum = Durum.init;
   }
+
+  User loginWithEmailAndPassword(String email, password) {}
+  User singUpWithEmailAndPassword(String email, password) {}
+  bool passwordReset(String email) {}
 }
