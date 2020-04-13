@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
         textTheme: TextTheme(
           //Test
           body1: TextStyle(
-            color: sheetTextColor,
+            color: Colors.amber,
             fontSize: 18,
           ),
           // end
@@ -53,7 +53,10 @@ class MyApp extends StatelessWidget {
             color: kapaliMavi,
             fontSize: 18,
           ),
-          display3: TextStyle(color: sheetTextColor, fontSize: 16),
+          display3: TextStyle(
+            color: sheetTextColor,
+            fontSize: 18,
+          ),
         ),
         inputDecorationTheme: InputDecorationTheme(
             labelStyle: TextStyle(color: grey, fontSize: 18),

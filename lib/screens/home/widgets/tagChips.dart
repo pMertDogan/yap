@@ -27,6 +27,8 @@ class _TagChipsState extends State<TagChips> {
         } else {
           return Container(
             height: 40,
+
+            //Use wrap for expand area . Wrap()
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: 10,
