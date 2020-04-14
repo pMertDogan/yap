@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo/locator.dart';
-import 'package:todo/screens/home/home.dart';
+import 'package:todo/screens/home.dart';
 import 'package:todo/ui/colors.dart';
 import 'package:todo/viewModels/subjectVM.dart';
 
