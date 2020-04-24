@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:todo/ui/colors.dart';
-import 'package:todo/widgets/addSubjectSheet/addSubject.dart';
+import 'package:todo/widgets/addSubjectSheet/addSubjectSheet.dart';
 import 'package:todo/widgets/homeScreen/bottomMenu.dart';
 import 'package:todo/widgets/homeScreen/daysUI.dart';
 import 'package:todo/widgets/homeScreen/infoAndFilterRow.dart';
@@ -65,20 +65,21 @@ class FAB extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
-        child: Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
-        onPressed: () => showModalBottomSheet(
-            //enable scroll down to close
-            isScrollControlled: true,
-            backgroundColor: sheetBGColor,
-            shape: ContinuousRectangleBorder(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(50))),
-            context: context,
-            builder: (builder) {
-              return AddSubject();
-            }),
-        backgroundColor: Colors.blueGrey);
+      child: Icon(
+        Icons.add,
+        color: Colors.white,
+      ),
+      backgroundColor: Colors.blueGrey,
+      onPressed: () => showModalBottomSheet(
+          //enable scroll down to close
+          isScrollControlled: true,
+          backgroundColor: sheetBGColor,
+          shape: ContinuousRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(50))),
+          context: context,
+          builder: (builder) {
+            return AddSubjectSheet();
+          }),
+    );
   }
 }

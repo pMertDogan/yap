@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:jiffy/jiffy.dart';
-import 'package:todo/widgets/addSubjectSheet/addSubject.dart';
+import 'package:states_rebuilder/states_rebuilder.dart';
+import 'package:todo/state/subjectVM.dart';
+import 'package:todo/widgets/addSubjectSheet/addSubjectSheet.dart';
 import 'package:todo/widgets/addSubjectSheet/titleText.dart';
 
 DateTime savedDateTime;
@@ -47,14 +49,18 @@ class TimeLineSelect extends StatefulWidget {
 }
 
 class _TimeLineSelectState extends State<TimeLineSelect> {
-//  String startTime = DateFormat('HH:mm:ss').format(DateTime.now());
-//  String startDate = DateFormat('dd:MM:yyyy').format(DateTime.now());
+  final ReactiveModel<SubjectVM> subjectVMRM =
+      Injector.getAsReactive<SubjectVM>();
 
-  String startTime = Jiffy(DateTime.now().toLocal()).format("HH:mm:ss");
-  String startDate = Jiffy(DateTime.now()).format("dd:MM:yyyy");
-
-  String endTime;
-  String endDate;
+  @override
+  void initState() {
+    subjectVMRM.value.startDate = Jiffy(DateTime.now()).format("dd/MM/yyyy");
+    subjectVMRM.value.startTime =
+        Jiffy(DateTime.now().toLocal()).format("HH:mm:ss");
+//    subjectVMRM.value.endTime = "--/--/--";
+//    subjectVMRM.value.endDate = "--:--:--";
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +68,7 @@ class _TimeLineSelectState extends State<TimeLineSelect> {
       children: <Widget>[
         Expanded(
           child: InkWell(
-            onTap: () => showSelectTimeDate(context),
+            onTap: () => showSelectTimeDate(context, selectForEnd: false),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -74,12 +80,15 @@ class _TimeLineSelectState extends State<TimeLineSelect> {
                 const SizedBox(
                   width: 6,
                 ),
-                Text(
-                  "Time : " +
-                      startTime.toString() +
-                      "\n Date:  " +
-                      startDate.toString(),
-                  style: Theme.of(context).textTheme.display1,
+                StateBuilder(
+                  models: [subjectVMRM],
+                  builder: (context, _) => Text(
+                    "Time : " +
+                        subjectVMRM.value.startTime.toString() +
+                        "\n Date:  " +
+                        subjectVMRM.value.startDate.toString(),
+                    style: Theme.of(context).textTheme.display1,
+                  ),
                 ),
               ],
             ),
@@ -87,6 +96,7 @@ class _TimeLineSelectState extends State<TimeLineSelect> {
         ),
         Expanded(
           child: InkWell(
+            onTap: () => showSelectTimeDate(context, selectForEnd: true),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -98,11 +108,19 @@ class _TimeLineSelectState extends State<TimeLineSelect> {
                 const SizedBox(
                   width: 6,
                 ),
-                Text(
-                  "Time : --:--:-- \n "
-                  "Date : --.--.----",
-                  style: Theme.of(context).textTheme.display1,
-                ),
+                StateBuilder(
+                  models: [subjectVMRM],
+                  builder: (context, _) => Text(
+                    subjectVMRM.value.endDate == null
+                        ? "-- : -- :--\n"
+                            "-- / -- /--"
+                        : "Time : " +
+                            subjectVMRM.value.endTime.toString() +
+                            "\n Date:  " +
+                            subjectVMRM.value.endDate.toString(),
+                    style: Theme.of(context).textTheme.display1,
+                  ),
+                )
               ],
             ),
           ),
@@ -111,16 +129,23 @@ class _TimeLineSelectState extends State<TimeLineSelect> {
     );
   }
 
-  void showSelectTimeDate(BuildContext context) async {
+  void showSelectTimeDate(BuildContext context,
+      {@required bool selectForEnd}) async {
     {
       TimeOfDay selectedTime;
       DateTime selectedDate;
-
       selectedDate = await showDatePicker(
         context: context,
-        initialDate: DateTime.now(),
-        firstDate: DateTime.now().subtract(Duration(days: 1)),
-        lastDate: DateTime(2030),
+        initialDate: !selectForEnd
+            ? DateTime.now()
+            : subjectVMRM.value.endDateInitDate.add(Duration(days: 4)),
+        firstDate: !selectForEnd
+            ? DateTime.now().subtract(Duration(days: 1))
+            : subjectVMRM.value.endDateInitDate,
+        //lastDate: DateTime.now(),
+        lastDate: !selectForEnd
+            ? subjectVMRM.value.startDateLastDate ?? DateTime(2030)
+            : DateTime(2030),
         builder: (BuildContext context, Widget child) {
           return Theme(
             data: ThemeData.light(),
@@ -137,12 +162,15 @@ class _TimeLineSelectState extends State<TimeLineSelect> {
         savedDateTime = DateTime(selectedDate.year, selectedDate.month,
             selectedDate.day, selectedTime.hour, selectedTime.minute);
 
-        setState(() {
-          startDate = Jiffy(savedDateTime).format("dd:MM:yyyy");
-          startTime = Jiffy(savedDateTime).format("HH:mm:ss");
+        subjectVMRM.setState((state) {
+          if (!selectForEnd) {
+            state.startDate = Jiffy(savedDateTime).format("dd/MM/yyyy");
+            return state.startTime = Jiffy(savedDateTime).format("HH:mm:ss");
+          } else {
+            state.endDate = Jiffy(savedDateTime).format("dd/MM/yyyy");
+            return state.endTime = Jiffy(savedDateTime).format("HH:mm:ss");
+          }
         });
-
-        print(startTime + "\n" + startDate);
       }
     }
   }
