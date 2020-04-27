@@ -18,7 +18,7 @@ class SubjectVM {
   DateTime _startDateLastDate;
   List<double> _latLngValues = <double>[];
   MapBoxPlace _mapBoxPlace;
-  //List<Friend> _userFriendList;
+  List<Friend> _selectedFriendList;
 
   MapBoxPlace get mapBoxPlace => _mapBoxPlace;
 

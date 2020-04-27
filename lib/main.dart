@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 import 'package:todo/screens/home.dart';
 import 'package:todo/state/subjectVM.dart';
+import 'package:todo/state/toDoVM.dart';
+import 'package:todo/state/userVM.dart';
 import 'package:todo/ui/colors.dart';
 import 'package:todo/ui/themeData.dart';
 
@@ -17,9 +19,11 @@ class MyApp extends StatelessWidget {
       title: 'Yap',
       theme: buildThemeData(),
       //home: LoginScreen(),
-      home: Injector(
-          inject: [Inject<SubjectVM>(() => SubjectVM())],
-          builder: (context) => Home()),
+      home: Injector(inject: [
+        Inject<UserVM>(() => UserVM()),
+        Inject<SubjectVM>(() => SubjectVM()),
+        Inject<ToDoVM>(() => ToDoVM()),
+      ], builder: (context) => Home()),
     );
   }
 }

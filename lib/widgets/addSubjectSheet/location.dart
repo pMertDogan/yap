@@ -10,10 +10,11 @@ import 'package:todo/state/subjectVM.dart';
 import 'package:todo/widgets/addSubjectSheet/addSubjectSheet.dart';
 
 LatLng _selectedLocation;
-String _mapBoxToken =
-    "pk.eyJ1IjoiNzYzIiwiYSI6ImNrOTFwbnhsejAwNXQzbW95cmQ0d2FhODcifQ.xY0bazHg-e1aiLzS3jqJ6w";
 final ReactiveModel<SubjectVM> subjectVMRM =
     Injector.getAsReactive<SubjectVM>();
+const String _mapBoxToken =
+    "pk.eyJ1IjoiNzYzIiwiYSI6ImNrOTFwbnhsejAwNXQzbW95cmQ0d2FhODcifQ.xY0bazHg-e1aiLzS3jqJ6w";
+
 final MapController _mapController = MapController();
 
 class Location extends StatefulWidget {

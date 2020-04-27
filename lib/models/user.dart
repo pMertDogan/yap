@@ -1,16 +1,7 @@
-import 'package:todo/models/friend.dart';
-
 class User {
   String _userName;
   String _eMail;
   String _photoURL;
-  List<Friend> _friends = <Friend>[];
-
-  List<Friend> get friends => _friends;
-
-  set friends(List<Friend> value) {
-    _friends = value;
-  }
 
   String get userName => _userName;
 

@@ -45,7 +45,7 @@ class _HomeState extends State<Home> {
             const SizedBox(
               height: 8,
             ),
-            TagChips(chipsSelect: chipsSelect, grey: grey),
+            TagChips(),
             InfoAndFilterRow(blue: blue),
             TodosCards(),
           ],

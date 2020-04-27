@@ -51,11 +51,46 @@ class _AddPhotoState extends State<AddPhoto> {
   }
 
   Future getImage() async {
-    File _image;
-    _image = await ImagePicker.pickImage(source: ImageSource.gallery);
-    subjectVMRM.setState((state) => state.selectedImageFile = _image);
-    if (_image != null) {
-      print(" selected image path : " + _image.path.toString());
+    ImageSource source = ImageSource.camera;
+
+    String result = await showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Container(
+            color: blue,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                FlatButton(
+                  onPressed: () {
+                    source = ImageSource.camera;
+                    Navigator.pop(context, "camera");
+                  },
+                  child: Text(
+                    "Camera",
+                    style: Theme.of(context).textTheme.display3,
+                  ),
+                ),
+                Text("or ", style: Theme.of(context).textTheme.display1),
+                FlatButton(
+                  onPressed: () {
+                    source = ImageSource.gallery;
+                    Navigator.pop(context, "gallery");
+                  },
+                  child: Text("Gallery",
+                      style: Theme.of(context).textTheme.display3),
+                )
+              ],
+            ),
+          );
+        });
+    if (result != null) {
+      File _image;
+      _image = await ImagePicker.pickImage(source: source);
+      subjectVMRM.setState((state) => state.selectedImageFile = _image);
+      if (_image != null) {
+        print(" selected image path : " + _image.path.toString());
+      }
     }
   }
 }

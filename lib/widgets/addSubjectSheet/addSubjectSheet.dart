@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'package:todo/ui/colors.dart';
+import 'package:todo/widgets/addSubjectSheet/TagsAddOrSelect.dart';
 import 'package:todo/widgets/addSubjectSheet/addPhoto.dart';
+import 'package:todo/widgets/addSubjectSheet/contributors.dart';
 import 'package:todo/widgets/addSubjectSheet/explanation.dart';
 import 'package:todo/widgets/addSubjectSheet/location.dart';
 import 'package:todo/widgets/addSubjectSheet/timeSelectUI.dart';
@@ -13,6 +16,10 @@ const Color blue = UIColors.kapaliMavi;
 const Color sheetBGColor = UIColors.addSubjectSheetBGColor;
 const Color sheetLightColor = UIColors.addSubjectSheetLightColor;
 const Color sheetYellowColor = UIColors.addSubjectSheetYellowColor;
+
+//final ReactiveModel<SubjectVM> subjectVMRM =
+//    Injector.getAsReactive<SubjectVM>();
+//final ReactiveModel<UserVM> userRMVM = Injector.getAsReactive<UserVM>();
 
 class AddSubjectSheet extends StatelessWidget {
   const AddSubjectSheet({
@@ -61,43 +68,8 @@ class AddSubjectSheet extends StatelessWidget {
             TitleText(
               titleText: "Add contributor",
             ),
-            Container(
-              height: 90,
-              child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  shrinkWrap: true,
-                  itemCount: 5,
-                  itemBuilder: (context, index) {
-                    List<bool> _selected = List.generate(5, (index) => true);
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: InkWell(
-                        onTap: () {
-                          _selected[index] = !_selected[index]
-                          return ;
-                        },
-                        child: CircleAvatar(
-                          radius: 35,
-                          backgroundImage: NetworkImage(
-                              "https://picsum.photos/id/${index + 10}/70/70"),
-                          child: _selected[index]
-                              ? null
-                              : Container(
-                                  decoration: BoxDecoration(
-                                      color: Color.fromRGBO(220, 214, 247, 55),
-                                      borderRadius: BorderRadius.circular(80)),
-                                  width: 70,
-                                  height: 70,
-                                  child: Icon(
-                                    Icons.check,
-                                    color: Colors.green,
-                                  ),
-                                ),
-                        ),
-                      ),
-                    );
-                  }),
-            ),
+            ContributorsSelect(),
+            TagsAddOrSelect(),
             //Keyboard height as padding for let user see fields
             Padding(
               padding: EdgeInsets.only(
