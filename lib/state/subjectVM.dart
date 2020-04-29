@@ -1,10 +1,8 @@
 import 'dart:io';
 import 'package:flutter_mapbox_autocomplete/flutter_mapbox_autocomplete.dart';
 import 'package:jiffy/jiffy.dart';
-import 'package:states_rebuilder/states_rebuilder.dart';
 import 'package:todo/models/friend.dart';
 import 'package:todo/models/subject.dart';
-import 'package:todo/models/user.dart';
 
 class SubjectVM {
   List<Subject> _subjectList = <Subject>[];
@@ -19,6 +17,13 @@ class SubjectVM {
   List<double> _latLngValues = <double>[];
   MapBoxPlace _mapBoxPlace;
   List<Friend> _selectedFriendList;
+  int _priority = 0;
+
+  int get priority => _priority;
+
+  set priority(int value) {
+    _priority = value;
+  }
 
   MapBoxPlace get mapBoxPlace => _mapBoxPlace;
 

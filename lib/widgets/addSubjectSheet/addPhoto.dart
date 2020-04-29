@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 import 'package:todo/state/subjectVM.dart';
-import 'package:todo/widgets/addSubjectSheet/addSubjectSheet.dart';
+import 'package:todo/ui/colors.dart';
 
 class AddPhoto extends StatefulWidget {
   const AddPhoto({
@@ -25,7 +25,7 @@ class _AddPhotoState extends State<AddPhoto> {
     return Container(
         height: 132,
         width: double.infinity,
-        color: sheetLightColor,
+        color: UIColors.addSubjectSheetLightColor,
         child: StateBuilder(
           models: [subjectVMRM],
           builder: (context, _) {
@@ -35,7 +35,7 @@ class _AddPhotoState extends State<AddPhoto> {
                     onPressed: () => getImage(),
                     icon: Icon(
                       Icons.add_a_photo,
-                      color: sheetYellowColor,
+                      color: UIColors.addSubjectSheetYellowColor,
                       size: 32,
                     ),
                   )
@@ -57,7 +57,7 @@ class _AddPhotoState extends State<AddPhoto> {
         context: context,
         builder: (context) {
           return Container(
-            color: blue,
+            color: UIColors.kapaliMavi,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[

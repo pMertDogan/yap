@@ -6,8 +6,7 @@ import 'package:latlong/latlong.dart';
 
 import 'package:states_rebuilder/states_rebuilder.dart';
 import 'package:todo/state/subjectVM.dart';
-
-import 'package:todo/widgets/addSubjectSheet/addSubjectSheet.dart';
+import 'package:todo/ui/colors.dart';
 
 LatLng _selectedLocation;
 final ReactiveModel<SubjectVM> subjectVMRM =
@@ -49,7 +48,7 @@ class _LocationState extends State<Location> {
                       Icon(
                         Icons.edit_location,
                         size: 48,
-                        color: sheetLightColor,
+                        color: UIColors.addSubjectSheetLightColor,
                       ),
                       Text(
                         "Add location",

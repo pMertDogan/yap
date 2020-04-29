@@ -3,7 +3,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 import 'package:todo/state/subjectVM.dart';
-import 'package:todo/widgets/addSubjectSheet/addSubjectSheet.dart';
+import 'package:todo/ui/colors.dart';
 import 'package:todo/widgets/addSubjectSheet/titleText.dart';
 
 DateTime savedDateTime;
@@ -74,7 +74,7 @@ class _TimeLineSelectState extends State<TimeLineSelect> {
               children: <Widget>[
                 Icon(
                   FontAwesome5Solid.clock,
-                  color: sheetLightColor,
+                  color: UIColors.addSubjectSheetLightColor,
                   size: 35,
                 ),
                 const SizedBox(
@@ -102,7 +102,7 @@ class _TimeLineSelectState extends State<TimeLineSelect> {
               children: <Widget>[
                 Icon(
                   FontAwesome5Solid.clock,
-                  color: sheetLightColor,
+                  color: UIColors.addSubjectSheetLightColor,
                   size: 35,
                 ),
                 const SizedBox(

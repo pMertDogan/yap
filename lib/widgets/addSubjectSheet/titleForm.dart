@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo/widgets/addSubjectSheet/addSubjectSheet.dart';
+import 'package:todo/ui/colors.dart';
 
 class TitleFormField extends StatelessWidget {
   const TitleFormField({
@@ -12,14 +12,15 @@ class TitleFormField extends StatelessWidget {
         widthFactor: 0.8,
         child: Container(
           decoration: BoxDecoration(
-              color: sheetLightColor, borderRadius: BorderRadius.circular(8)),
+              color: UIColors.addSubjectSheetLightColor,
+              borderRadius: BorderRadius.circular(8)),
           padding: EdgeInsets.all(5),
           child: TextFormField(
             style: TextStyle(color: Colors.white),
             decoration: InputDecoration(
                 hintText: "What should do?",
-                focusedBorder:
-                    UnderlineInputBorder(borderSide: BorderSide(color: grey)),
+                focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: UIColors.grey)),
                 border: InputBorder.none,
                 enabledBorder: InputBorder.none),
           ),

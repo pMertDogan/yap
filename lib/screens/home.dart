@@ -6,7 +6,7 @@ import 'package:todo/widgets/addSubjectSheet/addSubjectSheet.dart';
 import 'package:todo/widgets/homeScreen/bottomMenu.dart';
 import 'package:todo/widgets/homeScreen/daysUI.dart';
 import 'package:todo/widgets/homeScreen/infoAndFilterRow.dart';
-import 'package:todo/widgets/homeScreen/tagChips.dart';
+import 'package:todo/widgets/tagChips.dart';
 import 'package:todo/widgets/homeScreen/todosCards.dart';
 import 'package:todo/widgets/homeScreen/topRow.dart';
 

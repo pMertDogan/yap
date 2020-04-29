@@ -20,8 +20,13 @@ class ContributorsSelect extends StatelessWidget {
       child: StateBuilder(
         models: [subjectVMRM, userRMVM],
         builder: (context, _) {
-          List<Friend> friendsList = userRMVM.state.friends;
 
+          print(userRMVM.state.toString());
+          print(userRMVM.state.toString());
+          print(userRMVM.state.toString());
+          print(userRMVM.state.toString());
+
+          List<Friend> friendsList = userRMVM.state.friends;
           List<bool> _selected =
               List.generate(friendsList.length, (index) => true);
 
@@ -35,7 +40,8 @@ class ContributorsSelect extends StatelessWidget {
                   itemCount: friendsList.length,
                   itemBuilder: (context, index) {
                     return Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding:
+                          const EdgeInsets.only(left: 8.0, top: 8, bottom: 8),
                       child: InkWell(
                         onTap: () {
                           _selected[index] = !_selected[index];

@@ -8,6 +8,7 @@ class UserVM {
     Friend(id: 0, name: "Fatih", email: "1fatih@gmail.co"),
     Friend(id: 1, name: "Mert", email: "deneme@dd.co")
   ];
+  
 
   User get user => _user;
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todo/ui/colors.dart';
 import 'package:todo/widgets/addSubjectSheet/titleText.dart';
-import 'package:todo/widgets/homeScreen/tagChips.dart';
+import 'package:todo/widgets/tagChips.dart';
 
 class TagsAddOrSelect extends StatelessWidget {
   const TagsAddOrSelect({
@@ -11,7 +11,16 @@ class TagsAddOrSelect extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: <Widget>[AddTagUI(), TagChips()],
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: AddTagUI(),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 4),
+          child: TagChips(),
+        )
+      ],
     );
   }
 }

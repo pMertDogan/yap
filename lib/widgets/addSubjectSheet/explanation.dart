@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo/widgets/addSubjectSheet/addSubjectSheet.dart';
+import 'package:todo/ui/colors.dart';
 
 class ExplanationFromField extends StatelessWidget {
   const ExplanationFromField({
@@ -9,14 +9,14 @@ class ExplanationFromField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: sheetLightColor,
+      color: UIColors.addSubjectSheetLightColor,
       padding: EdgeInsets.all(5),
       child: TextFormField(
         style: TextStyle(color: Colors.white),
         decoration: InputDecoration(
             hintText: "  Everyone likes little secrets",
-            focusedBorder:
-                UnderlineInputBorder(borderSide: BorderSide(color: grey)),
+            focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: UIColors.grey)),
             border: InputBorder.none,
             enabledBorder: InputBorder.none),
       ),
