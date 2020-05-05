@@ -7,6 +7,7 @@ class Friend {
   String _pictureLocal;
   String _pictureURL;
 
+  // Kurucu _name ile hallet hata var böyle yaparsan
   Friend(
       {@required name,
       @required email,
@@ -14,27 +15,27 @@ class Friend {
       pictureLocal,
       pictureURL});
 
-  get pictureURL => _pictureURL;
+  String get pictureURL => _pictureURL;
 
-  set pictureURL(value) {
+  set pictureURL(String value) {
     _pictureURL = value;
   }
 
-  get pictureLocal => _pictureLocal;
+  String get pictureLocal => _pictureLocal;
 
-  set pictureLocal(value) {
+  set pictureLocal(String value) {
     _pictureLocal = value;
   }
 
-  get id => _id;
+  String get id => _id;
 
-  set id(value) {
+  set id(String value) {
     _id = value;
   }
 
-  get email => _email;
+  String get email => _email;
 
-  set email(value) {
+  set email(String value) {
     _email = value;
   }
 

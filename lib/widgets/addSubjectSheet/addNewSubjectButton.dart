@@ -9,10 +9,8 @@ class AddNewSubjectButton extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
-    
   @override
   Widget build(BuildContext context) {
-
     final ReactiveModel<UserVM> userVMRM = Injector.getAsReactive<UserVM>();
 
     return Padding(
@@ -20,23 +18,21 @@ class AddNewSubjectButton extends StatelessWidget {
       child: InkWell(
         onTap: () {
           print("added new test Friend to USERVM");
-          userVMRM.setState((state) => state.friends.add(Friend(id: 2, name: "deee", email: "asd@gmail.co"),
-    ));
+//          userVMRM.setState((state) => state.friends
+//              .add(Friend(id: 2, name: "deee", email: "asd@gmail.co")));
         },
         child: Container(
           decoration: BoxDecoration(
               color: UIColors.todoOrange,
               borderRadius: BorderRadius.circular(8)),
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-                vertical: 8, horizontal: 30),
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 30),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text(
                   "All is well",
-                  style:
-                      TextStyle(fontSize: 25, color: Colors.white),
+                  style: TextStyle(fontSize: 25, color: Colors.white),
                 ),
                 Icon(
                   Icons.check,

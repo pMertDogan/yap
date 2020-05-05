@@ -33,6 +33,12 @@ ThemeData buildThemeData() {
       ),
       inputDecorationTheme: InputDecorationTheme(
           labelStyle: TextStyle(color: grey, fontSize: 18),
+          errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20)),
+              borderSide: BorderSide(width: 1, color: UIColors.todoOrange)),
+          focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20)),
+              borderSide: BorderSide(width: 1, color: UIColors.todoOrange)),
           border: const OutlineInputBorder(
               borderRadius: BorderRadius.all(
                 Radius.circular(20),

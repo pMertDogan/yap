@@ -11,22 +11,20 @@ class ContributorsSelect extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ReactiveModel<SubjectVM> subjectVMRM =
-        Injector.getAsReactive<SubjectVM>();
-    final ReactiveModel<UserVM> userRMVM = Injector.getAsReactive<UserVM>();
+    final subjectVMRM = Injector.getAsReactive<SubjectVM>();
+    final userRMVM = Injector.getAsReactive<UserVM>();
 
     return Container(
       height: 120,
       child: StateBuilder(
         models: [subjectVMRM, userRMVM],
         builder: (context, _) {
-
-          print(userRMVM.state.toString());
-          print(userRMVM.state.toString());
-          print(userRMVM.state.toString());
-          print(userRMVM.state.toString());
-
-          List<Friend> friendsList = userRMVM.state.friends;
+          List<Friend> friendsList = List.generate(
+              5,
+              (index) => Friend(
+                  name: index.toString(),
+                  id: index.toString(),
+                  email: index.toString()));
           List<bool> _selected =
               List.generate(friendsList.length, (index) => true);
 
@@ -69,12 +67,12 @@ class ContributorsSelect extends StatelessWidget {
                                       ),
                                     ),
                             ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 8.0),
-                              child: Text(userRMVM.state.friends[index].name
-                                  .toString()),
-                            )
+//                            Padding(
+//                              padding:
+//                                  const EdgeInsets.symmetric(vertical: 8.0),
+//                              child: Text(userRMVM.state.friends[index].name
+//                                  .toString()),
+//                            )
                           ],
                         ),
                       ),

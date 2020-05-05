@@ -1,21 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:todo/screens/homeScreen/bottomMenu.dart';
+import 'package:todo/screens/homeScreen/daysUI.dart';
+import 'package:todo/screens/homeScreen/todosCards.dart';
+import 'package:todo/screens/homeScreen/topRow.dart';
 import 'package:todo/ui/colors.dart';
 import 'package:todo/widgets/addSubjectSheet/addSubjectSheet.dart';
-import 'package:todo/widgets/homeScreen/bottomMenu.dart';
-import 'package:todo/widgets/homeScreen/daysUI.dart';
-import 'package:todo/widgets/homeScreen/infoAndFilterRow.dart';
 import 'package:todo/widgets/tagChips.dart';
-import 'package:todo/widgets/homeScreen/todosCards.dart';
-import 'package:todo/widgets/homeScreen/topRow.dart';
 
-class Home extends StatefulWidget {
+import 'infoAndFilterRow.dart';
+
+class HomeScreen extends StatefulWidget {
   @override
-  _HomeState createState() => _HomeState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeScreenState extends State<HomeScreen> {
   final Color grey = UIColors.grey;
   final Color blue = UIColors.kapaliMavi;
 

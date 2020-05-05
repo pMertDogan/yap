@@ -1,24 +1,68 @@
-import 'package:todo/models/friend.dart';
+import 'dart:io';
+
 import 'package:todo/models/user.dart';
+import 'package:todo/repo/authBase.dart';
 
-class UserVM {
-  String test = "test value";
-  User _user = User(userName: "deneme");
-  List<Friend> _friends = <Friend>[
-    Friend(id: 0, name: "Fatih", email: "1fatih@gmail.co"),
-    Friend(id: 1, name: "Mert", email: "deneme@dd.co")
-  ];
-  
+class UserVM implements AuthBase {
+  final AuthBase authService;
 
-  User get user => _user;
-
-  set user(User value) {
-    _user = value;
+  UserVM(this.authService) {
+    print("userVM created ");
   }
 
-  List<Friend> get friends => _friends;
+  User user;
+  String registerLoginEmail;
+  String registerLoginPassword;
+  String registerLoginName;
+  File registerAvatar;
 
-  set friends(List<Friend> value) {
-    _friends = value;
+  bool fieldsCheck({bool registermode = false}) {
+    if (registermode) {
+      return registerLoginEmail != null &&
+          registerLoginPassword != null &&
+          registerLoginName != null;
+    } else {
+      return registerLoginEmail != null && registerLoginPassword != null;
+    }
+  }
+
+  @override
+  bool passwordReset(String email) {
+    // TODO: implement passwordReset
+    return null;
+  }
+
+  @override
+  Future<User> singInWithEmailAndPass(String email, password) async {
+    if (fieldsCheck()) {
+      user = await authService.singInWithEmailAndPass(email, password);
+    }
+    return user;
+  }
+
+  @override
+  Future<User> singUpWithEmailAndPass(String email, password, name,
+      {File userImage}) async {
+    File image = userImage ?? registerAvatar;
+    if (fieldsCheck(registermode: true)) {
+      user = await authService.singUpWithEmailAndPass(email, password, name,
+          userImage: image);
+      print("userVM UserName " + user.userName.toString());
+    }
+    return user;
+  }
+
+  @override
+  Future<User> getCurrentUser() async {
+    user = await authService.getCurrentUser();
+    return user;
+  }
+
+  @override
+  Future<String> changeUserPhoto(File photo) async {
+    String photoURL = await authService.changeUserPhoto(photo);
+    user.photoURL = photoURL;
+    print("userVM user photo url " + user.photoURL);
+    return photoURL;
   }
 }
