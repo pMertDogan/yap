@@ -1,0 +1,174 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:states_rebuilder/states_rebuilder.dart';
+import 'package:todo/models/todo.dart';
+import 'package:todo/state/addSubjectVM.dart';
+import 'package:todo/ui/colors.dart';
+
+class AddNewToDoUI extends StatelessWidget {
+  const AddNewToDoUI({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return StateBuilder<AddSubjectVM>(
+      tag: "ToDo",
+      observe: () => RM.get<AddSubjectVM>(),
+      builder: (context, addSubjectVMRM) {
+        List<ToDo> _toDoList = addSubjectVMRM.state.toDoList;
+        int toDoIndex = addSubjectVMRM.state.toDoIndex;
+
+        //Set title text to old value
+        TextEditingController _controllerTitle = TextEditingController()
+          ..text = _toDoList[toDoIndex].title
+          ..selection = TextSelection.fromPosition(
+              TextPosition(offset: _toDoList[toDoIndex].title.length));
+        //Set explanation text to old value
+        TextEditingController _controllerExplanation = TextEditingController()
+          ..text = _toDoList[toDoIndex].explanation
+          ..selection = TextSelection.fromPosition(
+              TextPosition(offset: _toDoList[toDoIndex].explanation.length));
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            const Center(
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Text(
+                  "Let's add new to do",
+                  style: TextStyle(color: Colors.amber),
+                ),
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                  color: UIColors.addSubjectSheetLightColor,
+                  borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(8),
+                      bottomRight: Radius.circular(8))),
+              child: Padding(
+                padding: const EdgeInsets.all(5),
+                child: Flex(
+                  direction: Axis.horizontal,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Flexible(
+                      flex: 1,
+                      child: Icon(
+                        Icons.info,
+                        color: UIColors.addSubjectLighIconColor,
+                      ),
+                    ),
+                    Flexible(
+                      flex: 4,
+                      child: TextFormField(
+                        controller: _controllerTitle,
+                        onChanged: (input) => addSubjectVMRM
+                            .value.toDoList[toDoIndex].title = input,
+                        autovalidate: true,
+                        validator: (input) =>
+                            input.length >= 3 ? null : "Please input title",
+                        style: TextStyle(color: Colors.white),
+                        decoration: InputDecoration(
+                          errorStyle:
+                              TextStyle(color: Colors.amber, fontSize: 18),
+                          contentPadding: EdgeInsets.only(left: 10),
+                          border: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          focusedErrorBorder: InputBorder.none,
+                          errorBorder: InputBorder.none,
+                          hintStyle: Theme.of(context).textTheme.display1,
+                          hintText: "Title of the to do",
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Container(
+              height: 125,
+              color: UIColors.addSubjectSheetLightColor,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  controller: _controllerExplanation,
+                  onChanged: (input) => addSubjectVMRM
+                      .value.toDoList[toDoIndex].explanation = input,
+                  style: TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                      hintText: "  Everyone likes little secrets",
+                      border: InputBorder.none,
+                      enabledBorder: InputBorder.none),
+                ),
+              ),
+            ),
+            Row(
+              children: <Widget>[
+                FlatButton(
+                  onPressed: () {
+                    if (toDoIndex > 0) {
+                      addSubjectVMRM.setState((s) => s.toDoIndex = --toDoIndex,
+                          filterTags: ["ToDo"]);
+                    }
+                  },
+                  child: toDoIndex > 0
+                      ? Row(
+                          children: <Widget>[
+                            Icon(
+                              Icons.navigate_before,
+                              color: UIColors.grey,
+                            ),
+                            Text(
+                              "Previous",
+                              style: Theme.of(context).textTheme.display1,
+                            )
+                          ],
+                        )
+                      : null,
+                ),
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      "# " + (addSubjectVMRM.value.toDoIndex + 1).toString(),
+                      style: TextStyle(fontSize: 28),
+                    ),
+                  ),
+                ),
+                FlatButton(
+                  onPressed: () => addSubjectVMRM.setState((s) {
+                    s.toDoList.add(ToDo());
+                    if (_controllerTitle.text.length >= 3) {
+                      s.toDoIndex = ++toDoIndex;
+                    }
+                    return;
+                  }, filterTags: ["ToDo"]),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        "Add new",
+                        style: Theme.of(context).textTheme.display1,
+                      ),
+                      Icon(
+                        Icons.navigate_next,
+                        color: UIColors.grey,
+                      )
+                    ],
+                  ),
+                )
+              ],
+            )
+          ],
+        );
+      },
+    );
+  }
+}

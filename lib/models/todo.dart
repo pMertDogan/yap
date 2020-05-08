@@ -1,7 +1,7 @@
 class ToDo {
-  String title, comment;
+  String title, explanation;
   List<String> tags = <String>[];
   var alert;
 
-  ToDo({this.title, this.comment, this.alert});
+  ToDo({this.title = "", this.explanation = "", this.alert});
 }

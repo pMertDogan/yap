@@ -1,87 +1,36 @@
-import 'dart:io';
-import 'package:flutter_mapbox_autocomplete/flutter_mapbox_autocomplete.dart';
-import 'package:jiffy/jiffy.dart';
-import 'package:todo/models/friend.dart';
 import 'package:todo/models/subject.dart';
+import 'package:todo/repo/subjectBase.dart';
 
-class SubjectVM {
-  List<Subject> _subjectList = <Subject>[];
-  int _totalSubjectCount = 0;
-  File _selectedImageFile;
-  String _startDate;
-  String _endDate;
-  String _startTime;
-  String _endTime;
-  DateTime _endDateInitDate;
-  DateTime _startDateLastDate;
-  List<double> _latLngValues = <double>[];
-  MapBoxPlace _mapBoxPlace;
-  List<Friend> _selectedFriendList;
-  int _priority = 0;
+class SubjectVM implements SubjectBase {
+  Set<int> tagChipsSelect = <int>{};
+  Set<String> tags = <String>{};
+  List<Subject> listOfSubjects = <Subject>[];
 
-  int get priority => _priority;
-
-  set priority(int value) {
-    _priority = value;
+  @override
+  void addSubject(Subject value) {
+    listOfSubjects.add(value);
+    tagChipsSelect.add(listOfSubjects.length - 1);
+    tags.addAll(value.tags);
   }
 
-  MapBoxPlace get mapBoxPlace => _mapBoxPlace;
-
-  set mapBoxPlace(MapBoxPlace value) {
-    _mapBoxPlace = value;
+  @override
+  void deleteSubject(Subject value) {
+    //Check is Subject in list?
+    if (listOfSubjects.contains(value)) {
+      listOfSubjects.removeAt(listOfSubjects.indexOf(value));
+    }
   }
 
-  List<double> get latLngValues => _latLngValues;
-
-  set latLngValues(List<double> value) {
-    _latLngValues = value;
+  @override
+  void deleteSubjectByIndex(int index) {
+    //Check index is acceptable
+    if (index >= 0 && index <= listOfSubjects.length - 1) {
+      listOfSubjects.removeAt(index);
+    }
   }
 
-  DateTime get startDateLastDate => _startDateLastDate;
-
-  DateTime get endDateInitDate => _endDateInitDate;
-
-  String get startDate => _startDate;
-
-  set selectedImageFile(File value) {
-    _selectedImageFile = value;
-  }
-
-  set startDate(String value) {
-    _startDate = value;
-    _endDateInitDate =
-        (Jiffy(value, "dd/MM/yyyy").dateTime.add(Duration(hours: 1)))
-            .subtract(Duration(days: 1));
-  }
-
-  List<Subject> get subjectList => _subjectList;
-
-  int get totalSubjectCount => _totalSubjectCount;
-
-  File get selectedImageFile => _selectedImageFile;
-
-  get endDate => _endDate;
-
-  set endDate(value) {
-    _endDate = value;
-    _startDateLastDate =
-        (Jiffy(value, "dd/MM/yyyy").dateTime.add(Duration(hours: 1)))
-            .subtract(Duration(days: 1));
-  }
-
-  get endTime => _endTime;
-
-  set endTime(value) {
-    _endTime = value;
-  }
-
-  get startTime => _startTime;
-
-  set startTime(value) {
-    _startTime = value;
-  }
-
-  void addNewSubject(Subject newSubject) {
-    _subjectList.add(newSubject);
+  @override
+  void updateSubject(Subject updatedSubject, int indexToReplace) {
+    listOfSubjects[indexToReplace] = updatedSubject;
   }
 }

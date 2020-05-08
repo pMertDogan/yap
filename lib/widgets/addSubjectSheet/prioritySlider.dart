@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
-import 'package:todo/state/subjectVM.dart';
+import 'package:todo/state/addSubjectVM.dart';
 import 'package:todo/ui/colors.dart';
 import 'package:todo/widgets/addSubjectSheet/customSliderThumb.dart';
 
@@ -11,12 +11,10 @@ class PrioritySlider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ReactiveModel<SubjectVM> subjectVMRM =
-        Injector.getAsReactive<SubjectVM>();
-
     return StateBuilder(
-      models: [subjectVMRM],
-      builder: (context, _) => SliderTheme(
+      tag: "priority",
+      observe: () => RM.get<AddSubjectVM>(),
+      builder: (context, addSubjectVMRM) => SliderTheme(
         data: SliderThemeData(
           activeTrackColor: UIColors.todoOrange,
           inactiveTrackColor: Colors.red[100],
@@ -40,10 +38,10 @@ class PrioritySlider extends StatelessWidget {
           max: 10,
           divisions: 10,
           label: "Priority",
-          value: subjectVMRM.state.priority.toDouble(),
-          onChanged: (value) => subjectVMRM.setState(
-            (state) => state.priority = value.toInt(),
-          ),
+          value: addSubjectVMRM.state.priority.toDouble(),
+          onChanged: (value) => addSubjectVMRM.setState(
+              (state) => state.priority = value.toInt(),
+              filterTags: ["priority"]),
         ),
       ),
     );

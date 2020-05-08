@@ -1,10 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:states_rebuilder/states_rebuilder.dart';
+import 'package:todo/models/friend.dart';
 import 'package:todo/screens/homeScreen/bottomMenu.dart';
 import 'package:todo/screens/homeScreen/daysUI.dart';
 import 'package:todo/screens/homeScreen/todosCards.dart';
 import 'package:todo/screens/homeScreen/topRow.dart';
+import 'package:todo/state/addSubjectVM.dart';
+import 'package:todo/state/subjectVM.dart';
+import 'package:todo/state/userVM.dart';
 import 'package:todo/ui/colors.dart';
 import 'package:todo/widgets/addSubjectSheet/addSubjectSheet.dart';
 import 'package:todo/widgets/tagChips.dart';
@@ -65,22 +70,44 @@ class FAB extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton(
-      child: Icon(
-        Icons.add,
-        color: Colors.white,
+    return Injector(
+      afterInitialBuild: (context) {
+        //Test
+        final userVMRM = RM.get<UserVM>();
+        userVMRM.setState((s) {
+          s.user.friends.clear();
+          return s.user.friends.add(
+              Friend(id: "70", userName: "Abra Denk", email: "ayla@mail.co"));
+        });
+        userVMRM.setState((s) => s.user.friends.add(
+            Friend(id: "72", userName: "Sir Jr. Mike", email: "mike@sir.co")));
+      },
+      inject: [
+        //Inject depency values
+        Inject.previous(
+          (previous) => AddSubjectVM(
+              friendList: IN.get<UserVM>().user.friends,
+              tags: IN.get<SubjectVM>().tags),
+        ),
+      ],
+      reinjectOn: [RM.get<UserVM>(), RM.get<SubjectVM>()],
+      builder: (context) => FloatingActionButton(
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+        backgroundColor: Colors.blueGrey,
+        onPressed: () => showModalBottomSheet(
+            //enable scroll down to close
+            isScrollControlled: true,
+            backgroundColor: sheetBGColor,
+            shape: ContinuousRectangleBorder(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(50))),
+            context: context,
+            builder: (builder) {
+              return AddSubjectSheet();
+            }),
       ),
-      backgroundColor: Colors.blueGrey,
-      onPressed: () => showModalBottomSheet(
-          //enable scroll down to close
-          isScrollControlled: true,
-          backgroundColor: sheetBGColor,
-          shape: ContinuousRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(50))),
-          context: context,
-          builder: (builder) {
-            return AddSubjectSheet();
-          }),
     );
   }
 }

@@ -1,47 +1,11 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 class Friend {
-  String _name;
-  String _email;
-  String _id;
-  String _pictureLocal;
-  String _pictureURL;
+  String id;
+  String userName;
+  String email;
+  String photoURL;
+  String photoLocal;
 
-  // Kurucu _name ile hallet hata var böyle yaparsan
-  Friend(
-      {@required name,
-      @required email,
-      @required id,
-      pictureLocal,
-      pictureURL});
-
-  String get pictureURL => _pictureURL;
-
-  set pictureURL(String value) {
-    _pictureURL = value;
-  }
-
-  String get pictureLocal => _pictureLocal;
-
-  set pictureLocal(String value) {
-    _pictureLocal = value;
-  }
-
-  String get id => _id;
-
-  set id(String value) {
-    _id = value;
-  }
-
-  String get email => _email;
-
-  set email(String value) {
-    _email = value;
-  }
-
-  String get name => _name;
-
-  set name(String value) {
-    _name = value;
-  }
+  Friend({@required this.id, @required this.userName, @required this.email});
 }

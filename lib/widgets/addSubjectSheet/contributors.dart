@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 import 'package:todo/models/friend.dart';
-import 'package:todo/state/subjectVM.dart';
+import 'package:todo/state/addSubjectVM.dart';
 import 'package:todo/state/userVM.dart';
 
 class ContributorsSelect extends StatelessWidget {
@@ -11,38 +11,45 @@ class ContributorsSelect extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final subjectVMRM = Injector.getAsReactive<SubjectVM>();
-    final userRMVM = Injector.getAsReactive<UserVM>();
+    final addSubjectVMRM = RM.get<AddSubjectVM>();
 
     return Container(
       height: 120,
-      child: StateBuilder(
-        models: [subjectVMRM, userRMVM],
-        builder: (context, _) {
-          List<Friend> friendsList = List.generate(
-              5,
-              (index) => Friend(
-                  name: index.toString(),
-                  id: index.toString(),
-                  email: index.toString()));
-          List<bool> _selected =
-              List.generate(friendsList.length, (index) => true);
+      child: StateBuilder<UserVM>(
+        tag: ["contributors"], //Test
+        observeMany: [() => RM.get<UserVM>(), () => addSubjectVMRM],
+        //I dont want rebuild this
+        child: Center(
+          child: Text(
+            "You dont have a friend",
+          ),
+        ),
+        builderWithChild: (context, userVMRM, child) {
+          //Friend List
+          Set<Friend> friendsList = userVMRM.state.user.friends;
+          //list for check state of the friends (selected..)
+          List<bool> _selected = addSubjectVMRM.state.selectedFriend;
 
           return friendsList.length == 0
-              ? Center(
-                  child: Text("You dont have a friend"),
-                )
+              ? child //Rebuild optimization
               : ListView.builder(
                   scrollDirection: Axis.horizontal,
                   shrinkWrap: true,
-                  itemCount: friendsList.length,
+                  itemCount:
+                      friendsList.length, //For each friend create a Widget
                   itemBuilder: (context, index) {
                     return Padding(
                       padding:
                           const EdgeInsets.only(left: 8.0, top: 8, bottom: 8),
                       child: InkWell(
                         onTap: () {
-                          _selected[index] = !_selected[index];
+                          //I want set state = !state , using AddSubjectVM
+                          addSubjectVMRM.setState(
+                              (s) => s.selectedFriend[index] =
+                                  !s.selectedFriend[index],
+                              filterTags: ["contributors"]);
+
+                          //_selected[index] = !_selected[index];
                           return;
                         },
                         child: Column(
@@ -50,10 +57,9 @@ class ContributorsSelect extends StatelessWidget {
                             CircleAvatar(
                               radius: 35,
                               backgroundImage: NetworkImage(
-                                  "https://picsum.photos/id/${index + 10}/70/70"),
+                                  "https://picsum.photos/id/${index + 2}/70/70"),
                               child: _selected[index]
-                                  ? null
-                                  : Container(
+                                  ? Container(
                                       decoration: BoxDecoration(
                                           color:
                                               Color.fromRGBO(220, 214, 247, 55),
@@ -64,15 +70,17 @@ class ContributorsSelect extends StatelessWidget {
                                       child: Icon(
                                         Icons.check,
                                         color: Colors.green,
+                                        size: 36,
                                       ),
-                                    ),
+                                    )
+                                  : null,
                             ),
-//                            Padding(
-//                              padding:
-//                                  const EdgeInsets.symmetric(vertical: 8.0),
-//                              child: Text(userRMVM.state.friends[index].name
-//                                  .toString()),
-//                            )
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Text(
+                                friendsList.elementAt(index).userName,
+                              ),
+                            )
                           ],
                         ),
                       ),

@@ -30,6 +30,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //Print active RM for debug
+
     RM.printActiveRM = true;
     return WhenRebuilder(
       observe: () => RM.future(IN.get<UserVM>().getCurrentUser()),

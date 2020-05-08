@@ -30,7 +30,7 @@ class FakeAuthService implements AuthBase {
   Future<User> singUpWithEmailAndPass(String email, password, name,
       {File userImage}) async {
     await Future.delayed(Duration(seconds: 1));
-    user = User(id: 0, email: email, userName: name);
+    user = User(id: 0.toString(), email: email, userName: name);
 //    print("fakeAuth  userName " + user.userName.toString());
     if (userImage != null) {
       user.photoURL = await changeUserPhoto(userImage);
@@ -42,7 +42,8 @@ class FakeAuthService implements AuthBase {
   Future<String> changeUserPhoto(File photo) async {
     //int id = user.id;
     await Future.delayed(Duration(seconds: 2));
-    String fakeURL = "https://picsum.photos/id/${Random().nextInt(50)}/70/70";
+    String fakeURL =
+        "https://picsum.photos/id/${Random().nextInt(50)}/300/300"; //70/70
     print("fake auth fakeurl " + fakeURL);
     return fakeURL;
   }

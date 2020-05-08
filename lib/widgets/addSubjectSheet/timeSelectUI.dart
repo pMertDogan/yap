@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
-import 'package:todo/state/subjectVM.dart';
+import 'package:todo/state/addSubjectVM.dart';
 import 'package:todo/ui/colors.dart';
 import 'package:todo/widgets/addSubjectSheet/titleText.dart';
 
@@ -49,18 +49,16 @@ class TimeLineSelect extends StatefulWidget {
 }
 
 class _TimeLineSelectState extends State<TimeLineSelect> {
-  final ReactiveModel<SubjectVM> subjectVMRM =
-      Injector.getAsReactive<SubjectVM>();
+  //RM.key can be used , but its work :). Rule 1 : If its work dont touch
+  final ReactiveModel<AddSubjectVM> addSubjectVMRM = RM.get<AddSubjectVM>();
 
-  @override
-  void initState() {
-    subjectVMRM.value.startDate = Jiffy(DateTime.now()).format("dd/MM/yyyy");
-    subjectVMRM.value.startTime =
-        Jiffy(DateTime.now().toLocal()).format("HH:mm:ss");
-//    subjectVMRM.value.endTime = "--/--/--";
-//    subjectVMRM.value.endDate = "--:--:--";
-    super.initState();
-  }
+//  @override
+//  void initState() {
+//    addSubjectVMRM.value.startDate = Jiffy(DateTime.now()).format("dd/MM/yyyy");
+//    addSubjectVMRM.value.startTime =
+//        Jiffy(DateTime.now().toLocal()).format("HH:mm:ss");
+//    super.initState();
+//  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,13 +78,21 @@ class _TimeLineSelectState extends State<TimeLineSelect> {
                 const SizedBox(
                   width: 6,
                 ),
-                StateBuilder(
-                  models: [subjectVMRM],
+                StateBuilder<AddSubjectVM>(
+                  tag: "startTimeDate", //check initState error ?
+                  initState: (context, addSubjectVMRM) {
+                    //Check for error if error move this codes to initState of the StateFullWidget
+                    addSubjectVMRM.value.startDate =
+                        Jiffy(DateTime.now()).format("dd/MM/yyyy");
+                    addSubjectVMRM.value.startTime =
+                        Jiffy(DateTime.now().toLocal()).format("HH:mm:ss");
+                  },
+                  observe: () => addSubjectVMRM,
                   builder: (context, _) => Text(
                     "Time : " +
-                        subjectVMRM.value.startTime.toString() +
+                        addSubjectVMRM.value.startTime.toString() +
                         "\n Date:  " +
-                        subjectVMRM.value.startDate.toString(),
+                        addSubjectVMRM.value.startDate.toString(),
                     style: Theme.of(context).textTheme.display1,
                   ),
                 ),
@@ -108,16 +114,17 @@ class _TimeLineSelectState extends State<TimeLineSelect> {
                 const SizedBox(
                   width: 6,
                 ),
-                StateBuilder(
-                  models: [subjectVMRM],
-                  builder: (context, _) => Text(
-                    subjectVMRM.value.endDate == null
+                StateBuilder<AddSubjectVM>(
+                  tag: "endTimeDate",
+                  observe: () => addSubjectVMRM,
+                  builder: (context, addSubjectVMRM) => Text(
+                    addSubjectVMRM.value.endDate == null
                         ? "-- : -- :--\n"
                             "-- / -- /--"
                         : "Time : " +
-                            subjectVMRM.value.endTime.toString() +
+                            addSubjectVMRM.value.endTime.toString() +
                             "\n Date:  " +
-                            subjectVMRM.value.endDate.toString(),
+                            addSubjectVMRM.value.endDate.toString(),
                     style: Theme.of(context).textTheme.display1,
                   ),
                 )
@@ -138,13 +145,13 @@ class _TimeLineSelectState extends State<TimeLineSelect> {
         context: context,
         initialDate: !selectForEnd
             ? DateTime.now()
-            : subjectVMRM.value.endDateInitDate.add(Duration(days: 4)),
+            : addSubjectVMRM.value.endDateInitDate.add(Duration(days: 4)),
         firstDate: !selectForEnd
             ? DateTime.now().subtract(Duration(days: 1))
-            : subjectVMRM.value.endDateInitDate,
+            : addSubjectVMRM.value.endDateInitDate,
         //lastDate: DateTime.now(),
         lastDate: !selectForEnd
-            ? subjectVMRM.value.startDateLastDate ?? DateTime(2030)
+            ? addSubjectVMRM.value.startDateLastDate ?? DateTime(2030)
             : DateTime(2030),
         builder: (BuildContext context, Widget child) {
           return Theme(
@@ -162,7 +169,7 @@ class _TimeLineSelectState extends State<TimeLineSelect> {
         savedDateTime = DateTime(selectedDate.year, selectedDate.month,
             selectedDate.day, selectedTime.hour, selectedTime.minute);
 
-        subjectVMRM.setState((state) {
+        addSubjectVMRM.setState((state) {
           if (!selectForEnd) {
             state.startDate = Jiffy(savedDateTime).format("dd/MM/yyyy");
             return state.startTime = Jiffy(savedDateTime).format("HH:mm:ss");
@@ -170,7 +177,7 @@ class _TimeLineSelectState extends State<TimeLineSelect> {
             state.endDate = Jiffy(savedDateTime).format("dd/MM/yyyy");
             return state.endTime = Jiffy(savedDateTime).format("HH:mm:ss");
           }
-        });
+        }, filterTags: ["startTimeDate", "endTimeDate"]);
       }
     }
   }

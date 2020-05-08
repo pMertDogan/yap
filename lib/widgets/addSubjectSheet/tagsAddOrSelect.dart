@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:states_rebuilder/states_rebuilder.dart';
+import 'package:todo/state/addSubjectVM.dart';
+import 'package:todo/state/subjectVM.dart';
 import 'package:todo/ui/colors.dart';
 import 'package:todo/widgets/addSubjectSheet/titleText.dart';
 import 'package:todo/widgets/tagChips.dart';
@@ -18,7 +21,9 @@ class TagsAddOrSelect extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.only(left: 4),
-          child: TagChips(),
+          child: TagChips(
+            sheetMode: true,
+          ),
         )
       ],
     );
@@ -32,6 +37,8 @@ class AddTagUI extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String yeniTag;
+
     return Row(
       children: <Widget>[
         TitleText(
@@ -52,23 +59,24 @@ class AddTagUI extends StatelessWidget {
                     child: SizedBox(
                         height: 50,
                         child: TextFormField(
+                          onChanged: (input) => yeniTag = input,
                           style: TextStyle(color: Colors.white),
                           decoration: InputDecoration(
                               hintText: "add new tag",
-                              focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide()),
+                              focusedBorder: InputBorder.none,
                               border: InputBorder.none,
                               enabledBorder: InputBorder.none),
                         )),
                   ),
                   FlatButton(
-                    color: UIColors.addSubjectLighIconColor,
-                    child: Text(
-                      "Add tag",
-                      style: Theme.of(context).textTheme.display2,
-                    ),
-                    onPressed: () {},
-                  ),
+                      color: UIColors.addSubjectLighIconColor,
+                      child: Text(
+                        "Add tag",
+                        style: Theme.of(context).textTheme.display2,
+                      ),
+                      onPressed: () => RM.getSetState<AddSubjectVM>(
+                          (s) => s.addTag(yeniTag),
+                          filterTags: ["tags"])),
                   const SizedBox(
                     width: 8,
                   )

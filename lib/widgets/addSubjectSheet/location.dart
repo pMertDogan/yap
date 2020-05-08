@@ -5,12 +5,12 @@ import 'package:flutter_mapbox_autocomplete/flutter_mapbox_autocomplete.dart';
 import 'package:latlong/latlong.dart';
 
 import 'package:states_rebuilder/states_rebuilder.dart';
-import 'package:todo/state/subjectVM.dart';
+import 'package:todo/state/addSubjectVM.dart';
 import 'package:todo/ui/colors.dart';
 
 LatLng _selectedLocation;
-final ReactiveModel<SubjectVM> subjectVMRM =
-    Injector.getAsReactive<SubjectVM>();
+final ReactiveModel<AddSubjectVM> addSubjectVMRM = RM.get<AddSubjectVM>();
+//Do not share it with git
 const String _mapBoxToken =
     "pk.eyJ1IjoiNzYzIiwiYSI6ImNrOTFwbnhsejAwNXQzbW95cmQ0d2FhODcifQ.xY0bazHg-e1aiLzS3jqJ6w";
 
@@ -30,12 +30,13 @@ class _LocationState extends State<Location> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => buildLocationSelect(context),
-      child: Container(
-        height: subjectVMRM.value.latLngValues.isEmpty ? 70 : 250,
+      child: AnimatedContainer(
+        duration: Duration(seconds: 1),
+        height: addSubjectVMRM.value.latLngValues.isEmpty ? 70 : 250,
         child: StateBuilder(
-          models: [subjectVMRM],
+          observe: () => addSubjectVMRM,
           builder: (context, _) {
-            List<double> latLngList = subjectVMRM.value.latLngValues;
+            List<double> latLngList = addSubjectVMRM.value.latLngValues;
 
             if (latLngList.isNotEmpty) {
               _selectedLocation = LatLng(latLngList[0], latLngList[1]);
@@ -61,12 +62,13 @@ class _LocationState extends State<Location> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          subjectVMRM.value.mapBoxPlace.placeName.toString() +
+                          addSubjectVMRM.value.mapBoxPlace.placeName
+                                  .toString() +
                               "\n",
                           style: Theme.of(context).textTheme.display1,
                         ),
                       ),
-                      Expanded(
+                      Flexible(
                         child: Container(
                           child: FlutterMap(
                             mapController: _mapController,
@@ -113,7 +115,7 @@ class _LocationState extends State<Location> {
           double lat = place.geometry.coordinates[1],
               lng = place.geometry.coordinates[0];
 
-          subjectVMRM.setState((state) {
+          addSubjectVMRM.setState((state) {
             print(place.placeName);
             if (state.mapBoxPlace != null) {
               _mapController.move(LatLng(lat, lng), 13);
