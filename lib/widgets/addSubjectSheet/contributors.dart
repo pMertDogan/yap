@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
-import 'package:todo/models/friend.dart';
+import 'package:todo/data/models/friend.dart';
 import 'package:todo/state/addSubjectVM.dart';
 import 'package:todo/state/userVM.dart';
 
@@ -28,7 +28,7 @@ class ContributorsSelect extends StatelessWidget {
           //Friend List
           Set<Friend> friendsList = userVMRM.state.user.friends;
           //list for check state of the friends (selected..)
-          List<bool> _selected = addSubjectVMRM.state.selectedFriend;
+          List<bool> _selected = addSubjectVMRM.state.selectedFriendList;
 
           return friendsList.length == 0
               ? child //Rebuild optimization
@@ -42,16 +42,9 @@ class ContributorsSelect extends StatelessWidget {
                       padding:
                           const EdgeInsets.only(left: 8.0, top: 8, bottom: 8),
                       child: InkWell(
-                        onTap: () {
-                          //I want set state = !state , using AddSubjectVM
-                          addSubjectVMRM.setState(
-                              (s) => s.selectedFriend[index] =
-                                  !s.selectedFriend[index],
-                              filterTags: ["contributors"]);
-
-                          //_selected[index] = !_selected[index];
-                          return;
-                        },
+                        onTap: () => addSubjectVMRM.setState(
+                            (s) => s.changeContributorStatus(index),
+                            filterTags: ["contributors"]),
                         child: Column(
                           children: <Widget>[
                             CircleAvatar(

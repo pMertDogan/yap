@@ -33,7 +33,7 @@ class BottomMenu extends StatelessWidget {
                       "Message",
                       style: Theme.of(context)
                           .textTheme
-                          .display1
+                          .headline4
                           .copyWith(fontSize: 21),
                     )),
               ),
@@ -51,7 +51,7 @@ class BottomMenu extends StatelessWidget {
                       "Friends",
                       style: Theme.of(context)
                           .textTheme
-                          .display1
+                          .headline4
                           .copyWith(fontSize: 21),
                     )),
               ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 import 'package:todo/state/userVM.dart';
-import 'package:todo/ui/colors.dart';
+import 'package:todo/utility/colors.dart';
 
 import 'formWidgets/emailForm.dart';
 import 'formWidgets/passwordForm.dart';
@@ -45,7 +45,7 @@ class _LoginUIState extends State<LoginUI> {
                     "Welcome",
                     style: Theme.of(context)
                         .textTheme
-                        .display1
+                        .headline4
                         .copyWith(fontSize: 25),
                   ),
                 ),
@@ -60,7 +60,7 @@ class _LoginUIState extends State<LoginUI> {
                         child: FlatButton(
                           child: Text(
                             "lost password?",
-                            style: Theme.of(context).textTheme.display1,
+                            style: Theme.of(context).textTheme.headline4,
                           ),
                           onPressed: () {},
                         ),

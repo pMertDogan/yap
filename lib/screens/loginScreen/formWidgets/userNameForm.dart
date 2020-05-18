@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 import 'package:todo/state/userVM.dart';
-import 'package:todo/ui/colors.dart';
+import 'package:todo/utility/colors.dart';
 
 class NameForm extends StatelessWidget {
   const NameForm({
@@ -15,18 +15,20 @@ class NameForm extends StatelessWidget {
       builder: (context, userVMRM) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 5),
         child: TextFormField(
+          initialValue: userVMRM.state
+              .registerLoginName, // TODO remove this , added for test login
           autovalidate: true,
           validator: (input) {
             bool test = input.length >= 3;
             if (test) {
-              userVMRM.value.registerLoginName = input;
+              userVMRM.state.registerLoginName = input;
               return null;
             } else {
-              userVMRM.value.registerLoginName = null;
+              userVMRM.state.registerLoginName = null;
               return "min 3 character";
             }
           },
-          style: Theme.of(context).textTheme.display1,
+          style: Theme.of(context).textTheme.headline4,
           decoration: InputDecoration(
             errorStyle: TextStyle(color: UIColors.todoOrange, fontSize: 18),
             labelText: "Username",

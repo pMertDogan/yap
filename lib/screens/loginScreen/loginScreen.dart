@@ -4,7 +4,7 @@ import 'package:todo/screens/loginScreen/loginUI.dart';
 import 'package:todo/screens/loginScreen/singUp.dart';
 import 'package:todo/screens/loginScreen/tabBarUI.dart';
 import 'package:todo/screens/loginScreen/topInfoUI.dart';
-import 'package:todo/ui/colors.dart';
+import 'package:todo/utility/colors.dart';
 
 class LoginScreen extends StatefulWidget {
   @override

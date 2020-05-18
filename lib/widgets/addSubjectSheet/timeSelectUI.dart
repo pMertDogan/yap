@@ -3,7 +3,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 import 'package:todo/state/addSubjectVM.dart';
-import 'package:todo/ui/colors.dart';
+import 'package:todo/utility/colors.dart';
 import 'package:todo/widgets/addSubjectSheet/titleText.dart';
 
 DateTime savedDateTime;
@@ -49,17 +49,6 @@ class TimeLineSelect extends StatefulWidget {
 }
 
 class _TimeLineSelectState extends State<TimeLineSelect> {
-  //RM.key can be used , but its work :). Rule 1 : If its work dont touch
-  final ReactiveModel<AddSubjectVM> addSubjectVMRM = RM.get<AddSubjectVM>();
-
-//  @override
-//  void initState() {
-//    addSubjectVMRM.value.startDate = Jiffy(DateTime.now()).format("dd/MM/yyyy");
-//    addSubjectVMRM.value.startTime =
-//        Jiffy(DateTime.now().toLocal()).format("HH:mm:ss");
-//    super.initState();
-//  }
-
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -82,18 +71,18 @@ class _TimeLineSelectState extends State<TimeLineSelect> {
                   tag: "startTimeDate", //check initState error ?
                   initState: (context, addSubjectVMRM) {
                     //Check for error if error move this codes to initState of the StateFullWidget
-                    addSubjectVMRM.value.startDate =
+                    addSubjectVMRM.state.subject.startDate =
                         Jiffy(DateTime.now()).format("dd/MM/yyyy");
-                    addSubjectVMRM.value.startTime =
+                    addSubjectVMRM.state.subject.startTime =
                         Jiffy(DateTime.now().toLocal()).format("HH:mm:ss");
                   },
-                  observe: () => addSubjectVMRM,
-                  builder: (context, _) => Text(
+                  observe: () => RM.get<AddSubjectVM>(),
+                  builder: (context, addSubjectVMRM) => Text(
                     "Time : " +
-                        addSubjectVMRM.value.startTime.toString() +
+                        addSubjectVMRM.state.subject.startTime.toString() +
                         "\n Date:  " +
-                        addSubjectVMRM.value.startDate.toString(),
-                    style: Theme.of(context).textTheme.display1,
+                        addSubjectVMRM.state.subject.startDate.toString(),
+                    style: Theme.of(context).textTheme.headline4,
                   ),
                 ),
               ],
@@ -115,17 +104,19 @@ class _TimeLineSelectState extends State<TimeLineSelect> {
                   width: 6,
                 ),
                 StateBuilder<AddSubjectVM>(
+                  initState: (context, addRM) => addRM.state.endDateInitDate =
+                      DateTime.now(), // for fix null error
                   tag: "endTimeDate",
-                  observe: () => addSubjectVMRM,
+                  observe: () => RM.get<AddSubjectVM>(),
                   builder: (context, addSubjectVMRM) => Text(
-                    addSubjectVMRM.value.endDate == null
+                    addSubjectVMRM.state.subject.endDate == null
                         ? "-- : -- :--\n"
                             "-- / -- /--"
                         : "Time : " +
-                            addSubjectVMRM.value.endTime.toString() +
+                            addSubjectVMRM.state.subject.endTime.toString() +
                             "\n Date:  " +
-                            addSubjectVMRM.value.endDate.toString(),
-                    style: Theme.of(context).textTheme.display1,
+                            addSubjectVMRM.state.subject.endDate.toString(),
+                    style: Theme.of(context).textTheme.headline4,
                   ),
                 )
               ],
@@ -138,47 +129,48 @@ class _TimeLineSelectState extends State<TimeLineSelect> {
 
   void showSelectTimeDate(BuildContext context,
       {@required bool selectForEnd}) async {
-    {
-      TimeOfDay selectedTime;
-      DateTime selectedDate;
-      selectedDate = await showDatePicker(
-        context: context,
-        initialDate: !selectForEnd
-            ? DateTime.now()
-            : addSubjectVMRM.value.endDateInitDate.add(Duration(days: 4)),
-        firstDate: !selectForEnd
-            ? DateTime.now().subtract(Duration(days: 1))
-            : addSubjectVMRM.value.endDateInitDate,
-        //lastDate: DateTime.now(),
-        lastDate: !selectForEnd
-            ? addSubjectVMRM.value.startDateLastDate ?? DateTime(2030)
-            : DateTime(2030),
-        builder: (BuildContext context, Widget child) {
-          return Theme(
-            data: ThemeData.light(),
-            child: child,
-          );
-        },
-      );
-      if (selectedDate != null) {
-        selectedTime = await showTimePicker(
-            context: context, initialTime: TimeOfDay.now());
-      }
+    final ReactiveModel<AddSubjectVM> addSubjectVMRM = RM.get<AddSubjectVM>();
 
-      if (selectedDate != null && selectedTime != null) {
-        savedDateTime = DateTime(selectedDate.year, selectedDate.month,
-            selectedDate.day, selectedTime.hour, selectedTime.minute);
+    TimeOfDay selectedTime;
+    DateTime selectedDate;
+    selectedDate = await showDatePicker(
+      context: context,
+      initialDate: selectForEnd
+          ? addSubjectVMRM.state.endDateInitDate.add(Duration(days: 4))
+          : DateTime.now(),
+      firstDate: selectForEnd
+          ? addSubjectVMRM.state.endDateInitDate
+          : DateTime.now().subtract(Duration(days: 1)),
+      lastDate: !selectForEnd
+          ? addSubjectVMRM.state.startDateLastDate ?? DateTime(2030)
+          : DateTime(2030),
+      builder: (BuildContext context, Widget child) {
+        return Theme(
+          data: ThemeData.light(),
+          child: child,
+        );
+      },
+    );
+    if (selectedDate != null) {
+      selectedTime =
+          await showTimePicker(context: context, initialTime: TimeOfDay.now());
+    }
 
-        addSubjectVMRM.setState((state) {
-          if (!selectForEnd) {
-            state.startDate = Jiffy(savedDateTime).format("dd/MM/yyyy");
-            return state.startTime = Jiffy(savedDateTime).format("HH:mm:ss");
-          } else {
-            state.endDate = Jiffy(savedDateTime).format("dd/MM/yyyy");
-            return state.endTime = Jiffy(savedDateTime).format("HH:mm:ss");
-          }
-        }, filterTags: ["startTimeDate", "endTimeDate"]);
-      }
+    if (selectedDate != null && selectedTime != null) {
+      savedDateTime = DateTime(selectedDate.year, selectedDate.month,
+          selectedDate.day, selectedTime.hour, selectedTime.minute);
+
+      addSubjectVMRM.setState((state) {
+        if (!selectForEnd) {
+          state.startDate = Jiffy(savedDateTime).format("dd/MM/yyyy");
+          return state.subject.startTime =
+              Jiffy(savedDateTime).format("HH:mm:ss");
+        } else {
+          state.endDate = Jiffy(savedDateTime).format("dd/MM/yyyy");
+          return state.subject.endTime =
+              Jiffy(savedDateTime).format("HH:mm:ss");
+        }
+      }, filterTags: ["startTimeDate", "endTimeDate"]);
     }
   }
 }

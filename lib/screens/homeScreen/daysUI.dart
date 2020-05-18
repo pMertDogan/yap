@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo/ui/colors.dart';
+import 'package:todo/utility/colors.dart';
 
 class DaysUI extends StatelessWidget {
   const DaysUI({
@@ -34,7 +34,7 @@ class DaysUI extends StatelessWidget {
                         "Buğün $index",
                         style: Theme.of(context)
                             .textTheme
-                            .display1
+                            .headline4
                             .copyWith(fontSize: 21),
                       ),
                     ),
@@ -44,7 +44,7 @@ class DaysUI extends StatelessWidget {
                         padding: const EdgeInsets.all(3),
                         child: Text(
                           index.toString() + " todo's",
-                          style: Theme.of(context).textTheme.display1,
+                          style: Theme.of(context).textTheme.headline4,
                         ),
                       ),
                     )

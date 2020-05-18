@@ -6,7 +6,7 @@ import 'package:latlong/latlong.dart';
 
 import 'package:states_rebuilder/states_rebuilder.dart';
 import 'package:todo/state/addSubjectVM.dart';
-import 'package:todo/ui/colors.dart';
+import 'package:todo/utility/colors.dart';
 
 LatLng _selectedLocation;
 final ReactiveModel<AddSubjectVM> addSubjectVMRM = RM.get<AddSubjectVM>();
@@ -32,11 +32,11 @@ class _LocationState extends State<Location> {
       onTap: () => buildLocationSelect(context),
       child: AnimatedContainer(
         duration: Duration(seconds: 1),
-        height: addSubjectVMRM.value.latLngValues.isEmpty ? 70 : 250,
-        child: StateBuilder(
+        height: addSubjectVMRM.state.subject.latLngList.isEmpty ? 70 : 250,
+        child: StateBuilder<AddSubjectVM>(
           observe: () => addSubjectVMRM,
           builder: (context, _) {
-            List<double> latLngList = addSubjectVMRM.value.latLngValues;
+            List<double> latLngList = addSubjectVMRM.state.subject.latLngList;
 
             if (latLngList.isNotEmpty) {
               _selectedLocation = LatLng(latLngList[0], latLngList[1]);
@@ -53,7 +53,7 @@ class _LocationState extends State<Location> {
                       ),
                       Text(
                         "Add location",
-                        style: Theme.of(context).textTheme.display1,
+                        style: Theme.of(context).textTheme.headline4,
                       )
                     ],
                   )
@@ -62,10 +62,10 @@ class _LocationState extends State<Location> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          addSubjectVMRM.value.mapBoxPlace.placeName
+                          addSubjectVMRM.state.mapBoxPlace.placeName
                                   .toString() +
                               "\n",
-                          style: Theme.of(context).textTheme.display1,
+                          style: Theme.of(context).textTheme.headline4,
                         ),
                       ),
                       Flexible(
@@ -121,7 +121,8 @@ class _LocationState extends State<Location> {
               _mapController.move(LatLng(lat, lng), 13);
             }
             state.mapBoxPlace = place;
-            return state.latLngValues = <double>[lat, lng];
+            return state.subject.latLngList = <double>[lat, lng];
+            //return state.latLngValues = <double>[lat, lng];
           });
         },
         limit: 10,

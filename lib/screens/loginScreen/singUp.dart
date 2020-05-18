@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 import 'package:todo/state/userVM.dart';
-import 'package:todo/ui/colors.dart';
+import 'package:todo/utility/colors.dart';
 import 'package:todo/widgets/pickImage.dart';
 import 'formWidgets/emailForm.dart';
 import 'formWidgets/passwordForm.dart';

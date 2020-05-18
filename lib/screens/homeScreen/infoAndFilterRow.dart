@@ -24,7 +24,7 @@ class _InfoAndFilterRowState extends State<InfoAndFilterRow> {
           padding: const EdgeInsets.all(8.0),
           child: Text(
             "today's to-do",
-            style: Theme.of(context).textTheme.display2.copyWith(fontSize: 24),
+            style: Theme.of(context).textTheme.headline3.copyWith(fontSize: 24),
           ),
         ),
         DropdownButtonHideUnderline(

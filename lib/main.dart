@@ -1,13 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
-import 'package:todo/repo/fakeAuthService.dart';
+import 'package:todo/data/dbHelper.dart';
+import 'package:todo/data/services/fakeAuthService.dart';
 import 'package:todo/screens/homeScreen/homeScreen.dart';
 import 'package:todo/screens/loginScreen/loginScreen.dart';
 import 'package:todo/state/subjectVM.dart';
-import 'package:todo/state/toDoVM.dart';
 import 'package:todo/state/userVM.dart';
-import 'package:todo/ui/themeData.dart';
+import 'package:todo/widgets/themeData.dart';
 
 void main() {
   runApp(
@@ -16,9 +16,10 @@ void main() {
       theme: buildThemeData(),
       home: Injector(
         inject: [
-          Inject<UserVM>(() => UserVM(FakeAuthService())),
+          Inject<DatabaseHelper>(() => DatabaseHelper()),
+          Inject<UserVM>(
+              () => UserVM(FakeAuthService(), IN.get<DatabaseHelper>())),
           Inject<SubjectVM>(() => SubjectVM()),
-          Inject<ToDoVM>(() => ToDoVM()),
         ],
         builder: (context) => MyApp(),
       ),
@@ -29,9 +30,6 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    //Print active RM for debug
-
-    RM.printActiveRM = true;
     return WhenRebuilder(
       observe: () => RM.future(IN.get<UserVM>().getCurrentUser()),
       onIdle: () => IdleScreen(),

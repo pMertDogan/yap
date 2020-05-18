@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 import 'package:todo/state/addSubjectVM.dart';
-import 'package:todo/ui/colors.dart';
+import 'package:todo/utility/colors.dart';
 
 class TitleFormField extends StatelessWidget {
   const TitleFormField({
@@ -22,7 +22,8 @@ class TitleFormField extends StatelessWidget {
           builder: (context, addSubjectVMRM) => TextFormField(
             autovalidate: true,
             validator: (input) {
-              addSubjectVMRM.state.subjectTitle = input;
+              //addSubjectVMRM.state.subjectTitle = input;
+              addSubjectVMRM.state.subject.title = input;
               return input.length <= 2 ? "Please input more" : null;
             },
             style: TextStyle(color: Colors.white),

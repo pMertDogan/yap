@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 import 'package:todo/state/addSubjectVM.dart';
-import 'package:todo/ui/colors.dart';
+import 'package:todo/utility/colors.dart';
 import 'package:todo/widgets/addSubjectSheet/customSliderThumb.dart';
 
 class PrioritySlider extends StatelessWidget {
@@ -11,7 +11,7 @@ class PrioritySlider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StateBuilder(
+    return StateBuilder<AddSubjectVM>(
       tag: "priority",
       observe: () => RM.get<AddSubjectVM>(),
       builder: (context, addSubjectVMRM) => SliderTheme(
@@ -38,9 +38,9 @@ class PrioritySlider extends StatelessWidget {
           max: 10,
           divisions: 10,
           label: "Priority",
-          value: addSubjectVMRM.state.priority.toDouble(),
+          value: addSubjectVMRM.state.subject.priority.toDouble(),
           onChanged: (value) => addSubjectVMRM.setState(
-              (state) => state.priority = value.toInt(),
+              (state) => state.subject.priority = value.toInt(),
               filterTags: ["priority"]),
         ),
       ),

@@ -1,4 +1,4 @@
-import 'package:todo/models/todo.dart';
+import 'package:todo/data/models/todo.dart';
 
 class ToDoVM {
   List<ToDo> _toDoList = <ToDo>[];

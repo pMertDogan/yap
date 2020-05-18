@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 import 'package:todo/state/userVM.dart';
-import 'package:todo/ui/colors.dart';
-import 'package:todo/validators.dart';
+import 'package:todo/utility/colors.dart';
+import 'package:todo/utility/validators.dart';
 
 class EmailForm extends StatelessWidget {
   const EmailForm({
@@ -23,14 +23,14 @@ class EmailForm extends StatelessWidget {
           autovalidate: true,
           validator: (input) {
             if (input.isValidEmail()) {
-              userVMRM.value.registerLoginEmail = input;
+              userVMRM.state.registerLoginEmail = input;
               return null;
             } else {
-              userVMRM.value.registerLoginEmail = null;
+              userVMRM.state.registerLoginEmail = null;
               return "Check your email";
             }
           },
-          style: Theme.of(context).textTheme.display1,
+          style: Theme.of(context).textTheme.headline4,
           decoration: InputDecoration(
             errorStyle: TextStyle(color: UIColors.todoOrange, fontSize: 18),
             labelText: "Email",

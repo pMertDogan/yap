@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:todo/ui/colors.dart';
+import 'package:todo/utility/colors.dart';
 
 Future<File> getImage(BuildContext context) async {
   ImageSource source = ImageSource.camera;
@@ -22,17 +22,17 @@ Future<File> getImage(BuildContext context) async {
                 },
                 child: Text(
                   "Camera",
-                  style: Theme.of(context).textTheme.display3,
+                  style: Theme.of(context).textTheme.headline2,
                 ),
               ),
-              Text("or ", style: Theme.of(context).textTheme.display1),
+              Text("or ", style: Theme.of(context).textTheme.headline4),
               FlatButton(
                 onPressed: () {
                   source = ImageSource.gallery;
                   Navigator.pop(context, "gallery");
                 },
                 child: Text("Gallery",
-                    style: Theme.of(context).textTheme.display3),
+                    style: Theme.of(context).textTheme.headline2),
               )
             ],
           ),

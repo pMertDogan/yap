@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
-import 'package:todo/models/todo.dart';
+import 'package:todo/data/models/todo.dart';
 import 'package:todo/state/addSubjectVM.dart';
-import 'package:todo/ui/colors.dart';
+import 'package:todo/utility/colors.dart';
+
+//Dirty code start :)
 
 class AddNewToDoUI extends StatelessWidget {
   const AddNewToDoUI({
@@ -16,7 +18,7 @@ class AddNewToDoUI extends StatelessWidget {
       tag: "ToDo",
       observe: () => RM.get<AddSubjectVM>(),
       builder: (context, addSubjectVMRM) {
-        List<ToDo> _toDoList = addSubjectVMRM.state.toDoList;
+        List<ToDo> _toDoList = addSubjectVMRM.state.subject.toDoList;
         int toDoIndex = addSubjectVMRM.state.toDoIndex;
 
         //Set title text to old value
@@ -29,6 +31,8 @@ class AddNewToDoUI extends StatelessWidget {
           ..text = _toDoList[toDoIndex].explanation
           ..selection = TextSelection.fromPosition(
               TextPosition(offset: _toDoList[toDoIndex].explanation.length));
+
+        RMKey<String> rmKeyTitle = RMKey<String>("");
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,8 +70,12 @@ class AddNewToDoUI extends StatelessWidget {
                       flex: 4,
                       child: TextFormField(
                         controller: _controllerTitle,
-                        onChanged: (input) => addSubjectVMRM
-                            .value.toDoList[toDoIndex].title = input,
+                        onChanged: (input) {
+                          print(input);
+                          rmKeyTitle.state = input;
+                          return addSubjectVMRM
+                              .state.subject.toDoList[toDoIndex].title = input;
+                        },
                         autovalidate: true,
                         validator: (input) =>
                             input.length >= 3 ? null : "Please input title",
@@ -81,7 +89,7 @@ class AddNewToDoUI extends StatelessWidget {
                           focusedBorder: InputBorder.none,
                           focusedErrorBorder: InputBorder.none,
                           errorBorder: InputBorder.none,
-                          hintStyle: Theme.of(context).textTheme.display1,
+                          hintStyle: Theme.of(context).textTheme.headline4,
                           hintText: "Title of the to do",
                         ),
                       ),
@@ -101,7 +109,7 @@ class AddNewToDoUI extends StatelessWidget {
                 child: TextFormField(
                   controller: _controllerExplanation,
                   onChanged: (input) => addSubjectVMRM
-                      .value.toDoList[toDoIndex].explanation = input,
+                      .state.subject.toDoList[toDoIndex].explanation = input,
                   style: TextStyle(color: Colors.white),
                   decoration: InputDecoration(
                       hintText: "  Everyone likes little secrets",
@@ -115,6 +123,7 @@ class AddNewToDoUI extends StatelessWidget {
                 FlatButton(
                   onPressed: () {
                     if (toDoIndex > 0) {
+                      rmKeyTitle.state = _toDoList[toDoIndex - 1].explanation;
                       addSubjectVMRM.setState((s) => s.toDoIndex = --toDoIndex,
                           filterTags: ["ToDo"]);
                     }
@@ -128,7 +137,7 @@ class AddNewToDoUI extends StatelessWidget {
                             ),
                             Text(
                               "Previous",
-                              style: Theme.of(context).textTheme.display1,
+                              style: Theme.of(context).textTheme.headline4,
                             )
                           ],
                         )
@@ -137,31 +146,37 @@ class AddNewToDoUI extends StatelessWidget {
                 Expanded(
                   child: Center(
                     child: Text(
-                      "# " + (addSubjectVMRM.value.toDoIndex + 1).toString(),
+                      "# " + (addSubjectVMRM.state.toDoIndex + 1).toString(),
                       style: TextStyle(fontSize: 28),
                     ),
                   ),
                 ),
-                FlatButton(
-                  onPressed: () => addSubjectVMRM.setState((s) {
-                    s.toDoList.add(ToDo());
-                    if (_controllerTitle.text.length >= 3) {
-                      s.toDoIndex = ++toDoIndex;
-                    }
-                    return;
-                  }, filterTags: ["ToDo"]),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        "Add new",
-                        style: Theme.of(context).textTheme.display1,
-                      ),
-                      Icon(
-                        Icons.navigate_next,
-                        color: UIColors.grey,
-                      )
-                    ],
+                StateBuilder<String>(
+                  observe: () =>
+                      RM.create<String>(_toDoList[toDoIndex].explanation),
+                  rmKey: rmKeyTitle,
+                  builder: (context, titleString) => FlatButton(
+                    onPressed: titleString.state.length > 3
+                        ? () => addSubjectVMRM.setState((s) {
+                              s.subject.toDoList.add(ToDo());
+                              rmKeyTitle.state =
+                                  _toDoList[toDoIndex + 1].explanation;
+                              s.toDoIndex = ++toDoIndex;
+                            }, filterTags: ["ToDo"])
+                        : null,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          "Add new",
+                          style: Theme.of(context).textTheme.headline4,
+                        ),
+                        Icon(
+                          Icons.navigate_next,
+                          color: UIColors.grey,
+                        )
+                      ],
+                    ),
                   ),
                 )
               ],

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo/ui/colors.dart';
+import 'package:todo/utility/colors.dart';
 
 const Color grey = UIColors.grey;
 const Color blue = UIColors.kapaliMavi;
@@ -13,20 +13,20 @@ ThemeData buildThemeData() {
       cursorColor: grey,
       textTheme: TextTheme(
         //Test
-        body1: TextStyle(
+        bodyText2: TextStyle(
           color: Colors.amber,
           fontSize: 18,
         ),
         // end
-        display1: TextStyle(
+        headline4: TextStyle(
           color: grey,
           fontSize: 18,
         ),
-        display2: TextStyle(
+        headline3: TextStyle(
           color: blue,
           fontSize: 18,
         ),
-        display3: TextStyle(
+        headline2: TextStyle(
           color: sheetTextColor,
           fontSize: 18,
         ),

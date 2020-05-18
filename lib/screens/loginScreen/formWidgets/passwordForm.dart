@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 import 'package:todo/state/userVM.dart';
-import 'package:todo/ui/colors.dart';
+import 'package:todo/utility/colors.dart';
 
 class PasswordForm extends StatelessWidget {
   const PasswordForm({
@@ -20,15 +20,15 @@ class PasswordForm extends StatelessWidget {
           initialValue: userVMRM.state.registerLoginPassword,
           validator: (input) {
             if (input.length >= 6) {
-              userVMRM.value.registerLoginPassword = input;
+              userVMRM.state.registerLoginPassword = input;
               return null;
             } else {
-              userVMRM.value.registerLoginPassword = null;
+              userVMRM.state.registerLoginPassword = null;
               return "Too weak";
             }
           },
           obscureText: true,
-          style: Theme.of(context).textTheme.display1,
+          style: Theme.of(context).textTheme.headline4,
           decoration: InputDecoration(
             errorStyle: TextStyle(color: UIColors.todoOrange, fontSize: 18),
             labelText: "Password",

@@ -37,7 +37,7 @@ class AddSubjectSheet extends StatelessWidget {
                     "Create a new Subject",
                     style: Theme.of(context)
                         .textTheme
-                        .display1
+                        .headline4
                         .copyWith(fontSize: 26),
                   ),
                 ),

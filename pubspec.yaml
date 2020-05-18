@@ -25,13 +25,18 @@ dependencies:
   cupertino_icons: ^0.1.2
   flutter_swiper: ^1.1.6
   flutter_icons: ^1.0.0+1
+  #time formatter
   jiffy: ^3.0.1
+  #maps
   flutter_map: ^0.9.0
   latlong: ^0.6.1
   flutter_mapbox_autocomplete: ^1.0.3
-  states_rebuilder: ^1.15.0
+  #state management
+  states_rebuilder: ^2.0.0
   image_picker: ^0.6.5+1
   validators: ^2.0.0
+  sqflite: ^1.3.0+1
+  path:
 
 
 dev_dependencies:

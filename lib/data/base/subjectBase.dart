@@ -1,4 +1,4 @@
-import 'package:todo/models/subject.dart';
+import 'package:todo/data/models/subject.dart';
 
 abstract class SubjectBase {
   void addSubject(Subject value);

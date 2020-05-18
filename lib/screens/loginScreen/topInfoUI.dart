@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:todo/ui/colors.dart';
-import 'package:todo/ui/strings.dart';
+import 'package:todo/utility/colors.dart';
+import 'package:todo/utility/strings.dart';
 
 class TopInfoArea extends StatelessWidget {
   const TopInfoArea({

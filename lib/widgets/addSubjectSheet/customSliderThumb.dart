@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo/ui/colors.dart';
+import 'package:todo/utility/colors.dart';
 
 class CustomSliderThumbCircle extends SliderComponentShape {
   final double thumbRadius;

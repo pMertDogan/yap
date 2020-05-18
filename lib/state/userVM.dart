@@ -1,19 +1,24 @@
 import 'dart:io';
 
-import 'package:todo/models/user.dart';
-import 'package:todo/repo/authBase.dart';
+import 'package:todo/data/dbHelper.dart';
+import 'package:todo/data/models/user.dart';
+import 'package:todo/data/base/authBase.dart';
 
 class UserVM implements AuthBase {
+  //Cloud
   final AuthBase authService;
+  //Local sqflite
+  final DatabaseHelper databaseHelper;
 
-  UserVM(this.authService) {
+  UserVM(this.authService, this.databaseHelper) {
     print("userVM created ");
   }
 
   User user;
-  String registerLoginEmail;
-  String registerLoginPassword;
-  String registerLoginName;
+  // TODO remove this test credentials
+  String registerLoginEmail = "test@test.co";
+  String registerLoginPassword = "oasdasdads";
+  String registerLoginName = "Test User";
   File registerAvatar;
 
   bool fieldsCheck({bool registermode = false}) {
@@ -26,6 +31,12 @@ class UserVM implements AuthBase {
     }
   }
 
+  Future<void> singOut() async {
+    await databaseHelper.singOut();
+    user = await databaseHelper.getCurrentUser();
+    print("singout User: " + user.toString());
+  }
+
   @override
   bool passwordReset(String email) {
     // TODO: implement passwordReset
@@ -33,36 +44,44 @@ class UserVM implements AuthBase {
   }
 
   @override
-  Future<User> singInWithEmailAndPass(String email, password) async {
+  Future<User> singIn(String email, password) async {
     if (fieldsCheck()) {
-      user = await authService.singInWithEmailAndPass(email, password);
+      user = await authService.singIn(email, password);
     }
     return user;
   }
 
   @override
-  Future<User> singUpWithEmailAndPass(String email, password, name,
-      {File userImage}) async {
+  Future<User> singUp(String email, password, name, {File userImage}) async {
+    //check userImage if empty => try user registerAVATAR
     File image = userImage ?? registerAvatar;
+
+    //Check all required fields
     if (fieldsCheck(registermode: true)) {
-      user = await authService.singUpWithEmailAndPass(email, password, name,
-          userImage: image);
-      print("userVM UserName " + user.userName.toString());
+      User u;
+      //Start sing up process
+      u = await authService.singUp(email, password, name, userImage: image);
+
+      databaseHelper.saveUser(u);
+      user = u;
     }
     return user;
   }
 
   @override
   Future<User> getCurrentUser() async {
-    user = await authService.getCurrentUser();
+    user = await databaseHelper.getCurrentUser();
+    //Cloud auth
+    //user = await authService.getCurrentUser();
     return user;
   }
 
   @override
   Future<String> changeUserPhoto(File photo) async {
     String photoURL = await authService.changeUserPhoto(photo);
+
+    //TODO Update local sqflite
     user.photoURL = photoURL;
-    print("userVM user photo url " + user.photoURL);
     return photoURL;
   }
 }

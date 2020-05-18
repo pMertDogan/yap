@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 import 'package:todo/state/addSubjectVM.dart';
-import 'package:todo/ui/colors.dart';
+import 'package:todo/utility/colors.dart';
 import 'package:todo/widgets/pickImage.dart';
 
 class AddPhoto extends StatefulWidget {
@@ -25,16 +25,20 @@ class _AddPhotoState extends State<AddPhoto> {
         color: UIColors.addSubjectSheetLightColor,
         child: StateBuilder<AddSubjectVM>(
           tag: "photo",
+          //watch: (s) => s.state.subject.picLocal,
           observe: () => RM.get<AddSubjectVM>(),
           builder: (context, addSubjectVMRM) {
-            File image = addSubjectVMRM.value.selectedImageFile;
+            //File image = addSubjectVMRM.state.subject.picLocal;
+            String image = addSubjectVMRM.state.subject.picLocal;
             return image == null
                 ? IconButton(
                     onPressed: () async {
                       File _selectedPhoto = await getImage(context);
-                      addSubjectVMRM.setState(
-                          (s) => s.selectedImageFile = _selectedPhoto,
-                          filterTags: ["photo"]);
+                      if (_selectedPhoto != null) {
+                        addSubjectVMRM.setState((s) {
+                          s.subject.picLocal = _selectedPhoto.path;
+                        }, filterTags: ["photo"]);
+                      }
                     },
                     icon: Icon(
                       Icons.add_a_photo,
@@ -45,15 +49,21 @@ class _AddPhotoState extends State<AddPhoto> {
                 : InkWell(
                     onTap: () async {
                       File _selectedPhoto = await getImage(context);
-                      addSubjectVMRM.setState(
-                          (s) => s.selectedImageFile = _selectedPhoto,
-                          filterTags: ["photo"]);
+                      if (_selectedPhoto != null) {
+                        addSubjectVMRM.setState((s) {
+                          s.subject.picLocal = _selectedPhoto.path;
+                        }, filterTags: ["photo"]);
+                      }
                     },
                     child: Image.file(
-                      image,
+                      File(image),
                       fit: BoxFit.cover,
-                    ),
-                  );
+                    )
+//                    child: Image.asset(
+//                      image,
+//                      fit: BoxFit.cover,
+//                    ),
+                    );
           },
         ));
   }

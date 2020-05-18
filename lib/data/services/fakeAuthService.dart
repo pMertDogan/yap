@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:todo/models/user.dart';
-import 'package:todo/repo/authBase.dart';
+import 'package:todo/data/models/user.dart';
+import 'package:todo/data/base/authBase.dart';
 
 class FakeAuthService implements AuthBase {
   User user;
@@ -20,18 +20,20 @@ class FakeAuthService implements AuthBase {
   }
 
   @override
-  Future<User> singInWithEmailAndPass(String email, password) async {
+  Future<User> singIn(String email, password) async {
     await Future.delayed(Duration(seconds: 1));
     throw Exception("Sory, its not avaible to use");
-    return user;
+    //return user;
   }
 
   @override
-  Future<User> singUpWithEmailAndPass(String email, password, name,
-      {File userImage}) async {
+  Future<User> singUp(String email, password, name, {File userImage}) async {
+    //should be Transaction singUp + image upload
+    //Fake delay
     await Future.delayed(Duration(seconds: 1));
-    user = User(id: 0.toString(), email: email, userName: name);
-//    print("fakeAuth  userName " + user.userName.toString());
+    //Generate fake user
+    user = User(id: 1, email: email, name: name);
+    //Upload user photo and change it
     if (userImage != null) {
       user.photoURL = await changeUserPhoto(userImage);
     }

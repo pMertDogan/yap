@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
+import 'package:todo/data/models/user.dart';
 import 'package:todo/state/userVM.dart';
-import 'package:todo/ui/colors.dart';
+import 'package:todo/utility/colors.dart';
 import 'package:todo/widgets/orangeLoadingIndicator.dart';
 
 class TabBarUI extends StatefulWidget {
@@ -20,29 +21,23 @@ class _TabBarUIState extends State<TabBarUI> {
 
   @override
   Widget build(BuildContext context) {
-    final userVMRM2 = RM.get<UserVM>();
-
     return Container(
       height: 50,
       color: UIColors.kapaliMavi,
       child: TabBar(
         onTap: (index) {
-          loginRMKey.value = index == 1 ? "I have a account" : "Login";
-          singUpRMKey.value = index == 0 ? "Create a new account" : "SingUp";
-
+          loginRMKey.state = index == 1 ? "I have a account" : "Login";
+          singUpRMKey.state = index == 0 ? "Create a new account" : "SingUp";
           //Check is button clicked 2x
           if (lastTapIndex == index) {
             //Try sing in or sing up
-
             switch (index) {
               //Sing In
               case (0):
                 print("Lets login user");
-                userVMRM2.setState((s) async => s
-                        .singInWithEmailAndPass(
-                            s.registerLoginEmail, s.registerLoginPassword)
+                RM.get<UserVM>().setState((s) async => s
+                        .singIn(s.registerLoginEmail, s.registerLoginPassword)
                         .catchError((e) {
-                      print("login error " + e.toString());
                       Scaffold.of(context).showSnackBar(SnackBar(
                         content: Text(e.toString()),
                       ));
@@ -50,10 +45,9 @@ class _TabBarUIState extends State<TabBarUI> {
                 break;
               //Sing Up
               case (1):
-                userVMRM2.setState((s) async => s.singUpWithEmailAndPass(
-                    s.registerLoginEmail,
-                    s.registerLoginPassword,
-                    s.registerLoginName));
+                //Update 2.0  not need add async for future
+                RM.get<UserVM>().setState((s) => s.singUp(s.registerLoginEmail,
+                    s.registerLoginPassword, s.registerLoginName));
                 break;
             }
           }
@@ -61,44 +55,47 @@ class _TabBarUIState extends State<TabBarUI> {
         },
         indicatorColor: UIColors.grey,
         tabs: [
-          WhenRebuilderOr<String>(
-            rmKey: loginRMKey,
-            observeMany: [() => RM.create<String>("Login"), () => userVMRM2],
-            onWaiting: () => lastTapIndex == 0
-                ? OrangeLoadingIndicator()
-                : Text(
-                    "Please wait...",
-                    style: Theme.of(context).textTheme.display1,
-                  ),
-            builder: (context, loginButtonTxt) {
-              return Tab(
-                child: Text(
-                  loginButtonTxt.value,
-                  style: Theme.of(context).textTheme.display1,
-                ),
-              );
-            },
+          Tab(
+            child: WhenRebuilderOr<String>(
+              rmKey: loginRMKey,
+              observeMany: [
+                () => RM.create<String>("Login"),
+                () => RM.get<UserVM>()
+              ],
+              onWaiting: () => lastTapIndex == 0
+                  ? OrangeLoadingIndicator()
+                  : Text(
+                      "Please wait...",
+                      style: Theme.of(context).textTheme.headline4,
+                    ),
+              builder: (context, loginButtonTxt) {
+                return Text(
+                  loginButtonTxt.state,
+                  style: Theme.of(context).textTheme.headline4,
+                );
+              },
+            ),
           ),
-          WhenRebuilderOr<String>(
-            rmKey: singUpRMKey,
-            observeMany: [
-              () => RM.create<String>("Create a new account"),
-              () => userVMRM2
-            ],
-            onWaiting: () => lastTapIndex == 1
-                ? OrangeLoadingIndicator()
-                : Text(
-                    "Please wait...",
-                    style: Theme.of(context).textTheme.display1,
-                  ),
-            builder: (context, loginButtonTxt) {
-              return Tab(
-                child: Text(
-                  loginButtonTxt.value,
-                  style: Theme.of(context).textTheme.display1,
-                ),
-              );
-            },
+          Tab(
+            child: WhenRebuilderOr<String>(
+              rmKey: singUpRMKey,
+              observeMany: [
+                () => RM.create<String>("Create a new account"),
+                () => RM.get<UserVM>()
+              ],
+              onWaiting: () => lastTapIndex == 1
+                  ? OrangeLoadingIndicator()
+                  : Text(
+                      "Please wait...",
+                      style: Theme.of(context).textTheme.headline4,
+                    ),
+              builder: (context, loginButtonTxt) {
+                return Text(
+                  loginButtonTxt.state,
+                  style: Theme.of(context).textTheme.headline4,
+                );
+              },
+            ),
           ),
         ],
       ),

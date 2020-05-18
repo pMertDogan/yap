@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class Friend {
   String id;
@@ -8,4 +8,9 @@ class Friend {
   String photoLocal;
 
   Friend({@required this.id, @required this.userName, @required this.email});
+
+  @override
+  String toString() {
+    return " Friend id:${this.id} UserName ${this.userName}";
+  }
 }

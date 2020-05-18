@@ -1,5 +1,5 @@
-import 'package:todo/models/subject.dart';
-import 'package:todo/repo/subjectBase.dart';
+import 'package:todo/data/models/subject.dart';
+import 'package:todo/data/base/subjectBase.dart';
 
 class SubjectVM implements SubjectBase {
   Set<int> tagChipsSelect = <int>{};
@@ -7,9 +7,11 @@ class SubjectVM implements SubjectBase {
   List<Subject> listOfSubjects = <Subject>[];
 
   @override
-  void addSubject(Subject value) {
+  Future<void> addSubject(Subject value) async {
+    await Future.delayed(Duration(seconds: 2));
+    print("added subject " + value.toString());
     listOfSubjects.add(value);
-    tagChipsSelect.add(listOfSubjects.length - 1);
+    tagChipsSelect = List.generate(tags.length, (index) => index).toSet();
     tags.addAll(value.tags);
   }
 

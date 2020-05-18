@@ -17,7 +17,7 @@ class TitleText extends StatelessWidget {
             : EdgeInsets.only(),
         child: Text(
           titleText,
-          style: Theme.of(context).textTheme.display3,
+          style: Theme.of(context).textTheme.headline2,
         ),
       ),
     );
