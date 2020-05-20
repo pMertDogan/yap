@@ -21,7 +21,7 @@ class DatabaseHelper {
         // Set the path to the database. Note: Using the `join` function from the
         // `path` package is best practice to ensure the path is correctly
         // constructed for each platform.
-        join(await getDatabasesPath(), 'yap_database_te.db'),
+        join(await getDatabasesPath(), 'yap_database_6.db'),
         version: 1, onCreate: (db, version) async {
       //Create required tables
       await db.execute(SQLTables.userTable);
@@ -53,5 +53,71 @@ class DatabaseHelper {
     return user;
   }
 
-  Future<void> addSubject(Subject subject) {}
+  Future<void> removeUnusedTags() async {
+    //Karşılığı olmayan todoları sil
+    final Database db = await database;
+    await db.execute(
+        "DELETE FROM todos WHERE id NOT IN (SELECT f.todo_id FROM subject_todos f)");
+  }
+
+  Future<void> addSubject(Subject subject) async {
+    final Database db = await database;
+    //Learn user ID
+    User user = await getCurrentUser();
+    //Start transaction
+    await db.transaction(
+      (txn) async {
+        /*
+      *   Add subject primitive values to subject Table
+      *   Add subject tags to tags Table
+      *   Connect subject and tags table with many yo many relationship
+      *
+      *
+      *
+      * */
+        //Create subject to map with all required fields
+        int userID = user.id;
+        Map<String, dynamic> mapToAddedTable = {"user_id": userID};
+        mapToAddedTable.addAll(subject.toSubjectMap());
+        int subjectID = await txn.insert("subject", mapToAddedTable);
+        print("DBHELPER subject added");
+
+        //Store inserted tags ids
+        List<int> idsOfTags = <int>[];
+        List<Map<String, String>> tagsMapList = subject.tagsToTable();
+        //Add each new tag to tags Table
+        if (tagsMapList.isNotEmpty) {
+          // normal forEach is not work with async
+          await Future.forEach(tagsMapList,
+              ((Map<String, String> tagMap) async {
+            //ignore old tags with ConflictAlgorithm
+            int addedID = await txn.insert("tags", tagMap,
+                conflictAlgorithm: ConflictAlgorithm.ignore);
+
+            //print("adet id " + addedID.toString());
+            if (addedID != null) {
+              idsOfTags.add(addedID);
+            } else {
+              //Retrive already added tag ID
+              List<Map> tagResult = await txn.query("tags",
+                  where: '"name" = ?', whereArgs: [tagMap["name"]]);
+              idsOfTags.add(tagResult[0]["id"]);
+            }
+          }));
+          print("tags ids : " + idsOfTags.toString());
+        }
+        //Many to many Subject <> TAGS
+        await Future.forEach(
+          idsOfTags,
+          (tagID) async {
+            Map<String, dynamic> tagToMap = {
+              "subject_id": subjectID,
+              "tag_id": tagID
+            };
+            await txn.insert("subject_tags", tagToMap);
+          },
+        );
+      },
+    );
+  }
 }

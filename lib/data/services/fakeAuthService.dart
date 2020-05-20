@@ -32,7 +32,7 @@ class FakeAuthService implements AuthBase {
     //Fake delay
     await Future.delayed(Duration(seconds: 1));
     //Generate fake user
-    user = User(id: 1, email: email, name: name);
+    user = User(id: Random().nextInt(763), email: email, name: name);
     //Upload user photo and change it
     if (userImage != null) {
       user.photoURL = await changeUserPhoto(userImage);

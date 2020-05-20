@@ -7,6 +7,7 @@ class User {
   String email;
   String photoURL;
   String photoLocal;
+
   //Used set for uniq but its not working on Friend class
   // :/ (I can add more than one same of the friend)
   Set<Friend> friends = <Friend>{};
@@ -27,20 +28,20 @@ class User {
 //    );
 
   User.fromMap(Map<String, dynamic> mapData) {
-    id = mapData["id"];
-    name = mapData["name"];
-    email = mapData["email"];
-    photoURL = mapData["photo_url"];
-    photoLocal = mapData["photo_local"];
+    this.id = mapData["id"];
+    this.name = mapData["name"];
+    this.email = mapData["email"];
+    this.photoURL = mapData["photo_url"];
+    this.photoLocal = mapData["photo_local"];
   }
 
   Map<String, dynamic> toMap() {
     return {
-      "id": id,
-      "name": name,
-      "email": email,
-      "photo_url": photoURL,
-      "photo_local": photoLocal
+      "id": this.id,
+      "name": this.name,
+      "email": this.email,
+      "photo_url": this.photoURL,
+      "photo_local": this.photoLocal
     };
   }
 }

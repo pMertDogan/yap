@@ -13,39 +13,43 @@ class AddNewSubjectButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: StateBuilder<AddSubjectVM>(
-        observe: () => RM.get<AddSubjectVM>(),
-        builder: (context, addSubjectVMRM) => InkWell(
-          onTap: () {
-            addSubjectVMRM.setState((a) async {
-              await a.addTagsToSubject();
-              //Pop to show homeScreen
-              RM.get<SubjectVM>().setState((s) =>
-                  s.addSubject(a.subject).then((x) => Navigator.pop(context)));
-            });
-          },
-          child: AnimatedContainer(
-            duration: Duration(milliseconds: 100),
-            decoration: BoxDecoration(
-                color: UIColors.todoOrange,
-                borderRadius: BorderRadius.circular(8)),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 30),
-              child: addSubjectVMRM.isWaiting
-                  ? CircularProgressIndicator()
-                  : Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Text(
-                          "All is well",
-                          style: TextStyle(fontSize: 25, color: Colors.white),
-                        ),
-                        Icon(
-                          Icons.check,
-                          color: Colors.green,
-                        ),
-                      ],
-                    ),
+      child: InkWell(
+        onTap: () async {
+          await RM.get<SubjectVM>().setState((s) async {
+            final a = RM.get<AddSubjectVM>();
+            a.state.addTagsToSubject();
+            await s.addSubject(a.state.subject);
+          });
+          //Pop to close bottomSheet
+          Navigator.pop(context);
+        },
+        child: AnimatedContainer(
+          duration: Duration(milliseconds: 100),
+          decoration: BoxDecoration(
+              color: UIColors.todoOrange,
+              borderRadius: BorderRadius.circular(8)),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 30),
+            child: StateBuilder<SubjectVM>(
+              observe: () => RM.get<SubjectVM>(),
+              builderWithChild: (context, subjectVMRM, child) {
+                return subjectVMRM.isWaiting
+                    ? CircularProgressIndicator()
+                    : child;
+              },
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text(
+                    "All is well",
+                    style: TextStyle(fontSize: 25, color: Colors.white),
+                  ),
+                  Icon(
+                    Icons.check,
+                    color: Colors.green,
+                  ),
+                ],
+              ),
             ),
           ),
         ),

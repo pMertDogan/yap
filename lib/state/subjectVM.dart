@@ -1,3 +1,4 @@
+import 'package:todo/data/dbHelper.dart';
 import 'package:todo/data/models/subject.dart';
 import 'package:todo/data/base/subjectBase.dart';
 
@@ -6,10 +7,16 @@ class SubjectVM implements SubjectBase {
   Set<String> tags = <String>{};
   List<Subject> listOfSubjects = <Subject>[];
 
+  final DatabaseHelper databaseHelper;
+  SubjectVM(this.databaseHelper);
+
   @override
   Future<void> addSubject(Subject value) async {
     await Future.delayed(Duration(seconds: 2));
-    print("added subject " + value.toString());
+    //save to sqflite
+    await databaseHelper.addSubject(value);
+    print("subject added to local sql Table");
+    //save to objects ???
     listOfSubjects.add(value);
     tagChipsSelect = List.generate(tags.length, (index) => index).toSet();
     tags.addAll(value.tags);

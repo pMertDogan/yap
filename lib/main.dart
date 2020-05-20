@@ -19,7 +19,7 @@ void main() {
           Inject<DatabaseHelper>(() => DatabaseHelper()),
           Inject<UserVM>(
               () => UserVM(FakeAuthService(), IN.get<DatabaseHelper>())),
-          Inject<SubjectVM>(() => SubjectVM()),
+          Inject<SubjectVM>(() => SubjectVM(IN.get<DatabaseHelper>())),
         ],
         builder: (context) => MyApp(),
       ),

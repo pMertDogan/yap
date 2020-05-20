@@ -73,8 +73,11 @@ class AddSubjectVM {
     }
   }
 
-  addTagsToSubject() {
+  void addTagsToSubject() {
     //add selected tags to Subject
-    tagChipsSelect.forEach((index) => subject.tags.add(tags.elementAt(index)));
+    if (tagChipsSelect.isNotEmpty) {
+      tagChipsSelect
+          .forEach((index) => subject.tags.add(tags.elementAt(index)));
+    }
   }
 }
