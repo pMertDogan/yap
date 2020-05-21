@@ -3,6 +3,7 @@ import 'package:states_rebuilder/states_rebuilder.dart';
 import 'package:todo/state/addSubjectVM.dart';
 import 'package:todo/state/subjectVM.dart';
 import 'package:todo/utility/colors.dart';
+import 'package:todo/widgets/orangeLoadingIndicator.dart';
 
 class AddNewSubjectButton extends StatelessWidget {
   const AddNewSubjectButton({
@@ -14,14 +15,12 @@ class AddNewSubjectButton extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: InkWell(
-        onTap: () async {
-          await RM.get<SubjectVM>().setState((s) async {
+        onTap: () {
+          RM.get<SubjectVM>().setState((s) async {
             final a = RM.get<AddSubjectVM>();
             a.state.addTagsToSubject();
             await s.addSubject(a.state.subject);
-          });
-          //Pop to close bottomSheet
-          Navigator.pop(context);
+          }, onData: (_, __) => Navigator.pop(context));
         },
         child: AnimatedContainer(
           duration: Duration(milliseconds: 100),
@@ -33,9 +32,7 @@ class AddNewSubjectButton extends StatelessWidget {
             child: StateBuilder<SubjectVM>(
               observe: () => RM.get<SubjectVM>(),
               builderWithChild: (context, subjectVMRM, child) {
-                return subjectVMRM.isWaiting
-                    ? CircularProgressIndicator()
-                    : child;
+                return subjectVMRM.isWaiting ? OrangeLoadingIndicator() : child;
               },
               child: Row(
                 mainAxisSize: MainAxisSize.min,

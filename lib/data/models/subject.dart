@@ -15,9 +15,9 @@ class Subject {
       endDate,
       startTime,
       endTime;
-  bool completed = false;
+  bool completed; //= false;
 
-  //Custom
+  //Custom fields - from other Tables
   List<ToDo> toDoList;
   List<Alarms> listOfAlarms;
   List<Friend> contributors;
@@ -25,6 +25,7 @@ class Subject {
   List<double> latLngList = <double>[];
 
   Subject({
+    this.id,
     this.picURL,
     this.picLocal,
     this.title,
@@ -35,6 +36,7 @@ class Subject {
     this.endTime,
     this.contributors,
     this.listOfAlarms,
+    this.completed,
     int priority,
     tags,
     List<ToDo> toDoList,
@@ -46,10 +48,7 @@ class Subject {
 
   @override
   String toString() {
-    return 'Subject{picURL: $picURL, title: $title, explanation: $explanation, startDate: $startDate,'
-        ' endDate: $endDate, startTime: $startTime, endTime: $endTime,picLocal: $picLocal, '
-        'listOfAlarms: $listOfAlarms, contributors: $contributors, tags: $tags, priority: $priority, '
-        'toDoList: $toDoList, latLngList: $latLngList,}';
+    return 'Subject{title: $title, explanation: $explanation, tags: $tags}';
   }
 
   Map<String, dynamic> toSubjectMap() {
@@ -57,9 +56,6 @@ class Subject {
     // https://www.sqlitetutorial.net/sqlite-date/
     //https://pub.dev/documentation/intl/latest/intl/DateFormat-class.html
     //Return Map for Subject Table
-    print("unconverted " + this.startDate);
-
-    //HATAAAA
     String convertedStartDate =
         Jiffy(this.startDate, "dd/MM/yyyy").format("yyyy/MM/dd");
     String convertedStartTime =
@@ -69,7 +65,6 @@ class Subject {
       convertedEndDate = Jiffy(this.endDate, "dd/MM/yyyy").format("yyyy/MM/dd");
       convertedEndTime = Jiffy(this.endTime, "HH:mm:ss").format("HH:mm:ss");
     }
-    print(" converted time YYYY/MM/DD " + convertedStartDate);
 
     return {
       //"id": this.id,
@@ -82,21 +77,43 @@ class Subject {
       "end_date": convertedEndDate,
       "end_time": convertedEndTime,
       "priority": this.priority,
-      "completed": this.completed ? 1 : 0, // True => 1 False => 0
+      //"completed": this.completed ? 1 : 0, // True => 1 False => 0
     };
   }
 
-  List<Map<String, String>> tagsToTable() {
+  List<Map<String, String>> toTagsMap() {
     //Return Map for Subject Table
-    List<Map<String, String>> listOftagMap = [];
+    return List.generate(tags.length,
+        (index) => <String, String>{"name": tags.elementAt(index)});
+//    List<Map<String, String>> listOftagMap = [];
+//
+//    if (tags.isNotEmpty) {
+//      //Convert each tag to Map
+//      tags.forEach((element) {
+//        listOftagMap.add(<String, String>{"name": element});
+//      });
+//    }
+//    return listOftagMap;
+  }
 
-    if (tags.isNotEmpty) {
-      //Convert each tag to Map
-      tags.forEach((element) {
-        listOftagMap.add(<String, String>{"name": element});
-      });
-    }
-
-    return listOftagMap;
+  factory Subject.fromMap(Map<String, dynamic> map) {
+    return new Subject(
+      id: map['id'] as int,
+      priority: map['priority'] as int,
+      picURL: map['pic_url'] as String,
+      picLocal: map['pic_local'] as String,
+      title: map['title'] as String,
+      explanation: map['explanation'] as String,
+      startDate: map['start_date'] as String,
+      endDate: map['end_date'] as String,
+      startTime: map['start_time'] as String,
+      endTime: map['end_time'] as String,
+      completed: map['completed'] == 0 ? false : true,
+      toDoList: map['toDoList'] as List<ToDo>,
+      listOfAlarms: map['listOfAlarms'] as List<Alarms>,
+      contributors: map['contributors'] as List<Friend>,
+      tags: map['tags'] as Set<String>,
+      latLng: map['latLngList'] as List<double>,
+    );
   }
 }

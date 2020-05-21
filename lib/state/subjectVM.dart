@@ -8,6 +8,7 @@ class SubjectVM implements SubjectBase {
   List<Subject> listOfSubjects = <Subject>[];
 
   final DatabaseHelper databaseHelper;
+
   SubjectVM(this.databaseHelper);
 
   @override
@@ -16,14 +17,11 @@ class SubjectVM implements SubjectBase {
     //save to sqflite
     await databaseHelper.addSubject(value);
     print("subject added to local sql Table");
-    //save to objects ???
-    listOfSubjects.add(value);
-    tagChipsSelect = List.generate(tags.length, (index) => index).toSet();
-    tags.addAll(value.tags);
+    await getAllSubjects();
   }
 
   @override
-  void deleteSubject(Subject value) {
+  Future<void> deleteSubject(Subject value) {
     //Check is Subject in list?
     if (listOfSubjects.contains(value)) {
       listOfSubjects.removeAt(listOfSubjects.indexOf(value));
@@ -31,7 +29,7 @@ class SubjectVM implements SubjectBase {
   }
 
   @override
-  void deleteSubjectByIndex(int index) {
+  Future<void> deleteSubjectByIndex(int index) {
     //Check index is acceptable
     if (index >= 0 && index <= listOfSubjects.length - 1) {
       listOfSubjects.removeAt(index);
@@ -39,7 +37,14 @@ class SubjectVM implements SubjectBase {
   }
 
   @override
-  void updateSubject(Subject updatedSubject, int indexToReplace) {
+  Future<void> updateSubject(Subject updatedSubject, int indexToReplace) {
     listOfSubjects[indexToReplace] = updatedSubject;
+  }
+
+  @override
+  Future<void> getAllSubjects() async {
+    listOfSubjects = await databaseHelper.getAllSubjects() ?? <Subject>[];
+    tags = await databaseHelper.getAllTags() ?? <String>{};
+    tagChipsSelect = List.generate(tags.length, (index) => index).toSet();
   }
 }

@@ -1,8 +1,9 @@
 import 'package:todo/data/models/subject.dart';
 
 abstract class SubjectBase {
-  void addSubject(Subject value);
-  void deleteSubject(Subject value);
-  void deleteSubjectByIndex(int index);
-  void updateSubject(Subject updatedSubject, int indexToReplace);
+  Future<void> addSubject(Subject value);
+  Future<void> deleteSubject(Subject value);
+  Future<void> deleteSubjectByIndex(int index);
+  Future<void> updateSubject(Subject updatedSubject, int indexToReplace);
+  Future<void> getAllSubjects();
 }

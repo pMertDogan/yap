@@ -73,45 +73,49 @@ class FAB extends StatelessWidget {
   Widget build(BuildContext context) {
     return Injector(
 //      afterInitialBuild: (context) {
-//        Test
-//        final userVMRM = RM.get<UserVM>();
-//        userVMRM.setState((s) {
-//          s.user.friends.clear();
-//          return s.user.friends.add(
-//              Friend(id: "70", userName: "Abra Denk", email: "ayla@mail.co"));
-//        });
-//        userVMRM.setState((s) => s.user.friends.add(
-//            Friend(id: "72", userName: "Sir Jr. Mike", email: "mike@sir.co")));
-//      },
+////        Test
+////        final userVMRM = RM.get<UserVM>();
+////        userVMRM.setState((s) {
+////          s.user.friends.clear();
+////          return s.user.friends.add(
+////              Friend(id: "70", userName: "Abra Denk", email: "ayla@mail.co"));
+////        });
+////        userVMRM.setState((s) => s.user.friends.add(
+////            Friend(id: "72", userName: "Sir Jr. Mike", email: "mike@sir.co")));
+////      },
       inject: [
         Inject.previous(
-          (previous) => AddSubjectVM(IN.get<DatabaseHelper>(),
-              friendList: IN.get<UserVM>().user.friends,
-              tags: IN.get<SubjectVM>().tags),
-          //isLazy: false
-        ),
+            (previous) => AddSubjectVM(IN.get<DatabaseHelper>(),
+                friendList: IN.get<UserVM>().user.friends,
+                tags: IN.get<SubjectVM>().tags),
+            isLazy: false),
       ],
       reinjectOn: [
         // If enabled and user singout its throw null because user == null => user.friends return null
         //RM.get<UserVM>(),
         RM.get<SubjectVM>()
       ],
-      builder: (context) => FloatingActionButton(
-        child: Icon(
-          Icons.add,
-          color: Colors.white,
+      builder: (context) => StateBuilder<AddSubjectVM>(
+        observe: () => RM.get<AddSubjectVM>(),
+        builderWithChild: (x, y, child) => child,
+        child: FloatingActionButton(
+          child: Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.blueGrey,
+          onPressed: () => showModalBottomSheet(
+              //enable scroll down to close
+              isScrollControlled: true,
+              backgroundColor: sheetBGColor,
+              shape: ContinuousRectangleBorder(
+                  borderRadius:
+                      BorderRadius.vertical(top: Radius.circular(50))),
+              context: context,
+              builder: (builder) {
+                return AddSubjectSheet();
+              }),
         ),
-        backgroundColor: Colors.blueGrey,
-        onPressed: () => showModalBottomSheet(
-            //enable scroll down to close
-            isScrollControlled: true,
-            backgroundColor: sheetBGColor,
-            shape: ContinuousRectangleBorder(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(50))),
-            context: context,
-            builder: (builder) {
-              return AddSubjectSheet();
-            }),
       ),
     );
   }

@@ -45,6 +45,11 @@ class MyApp extends StatelessWidget {
           builder: (_, userVMRM) {
             return userVMRM.state.user != null ? HomeScreen() : LoginScreen();
           },
+          afterRebuild: (context, userVMRM) {
+            if (userVMRM.state.user != null) {
+              RM.get<SubjectVM>().setState((s) => s.getAllSubjects());
+            }
+          },
         );
       },
     );

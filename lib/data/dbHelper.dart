@@ -84,7 +84,7 @@ class DatabaseHelper {
 
         //Store inserted tags ids
         List<int> idsOfTags = <int>[];
-        List<Map<String, String>> tagsMapList = subject.tagsToTable();
+        List<Map<String, String>> tagsMapList = subject.toTagsMap();
         //Add each new tag to tags Table
         if (tagsMapList.isNotEmpty) {
           // normal forEach is not work with async
@@ -93,8 +93,6 @@ class DatabaseHelper {
             //ignore old tags with ConflictAlgorithm
             int addedID = await txn.insert("tags", tagMap,
                 conflictAlgorithm: ConflictAlgorithm.ignore);
-
-            //print("adet id " + addedID.toString());
             if (addedID != null) {
               idsOfTags.add(addedID);
             } else {
@@ -104,7 +102,6 @@ class DatabaseHelper {
               idsOfTags.add(tagResult[0]["id"]);
             }
           }));
-          print("tags ids : " + idsOfTags.toString());
         }
         //Many to many Subject <> TAGS
         await Future.forEach(
@@ -117,7 +114,59 @@ class DatabaseHelper {
             await txn.insert("subject_tags", tagToMap);
           },
         );
+        //return subjectID;
       },
     );
+  }
+
+  Future<List<Subject>> getAllSubjects() async {
+    final Database db = await database;
+    //to Hold created subjects
+    List<Subject> listOfSubjects = <Subject>[];
+    Subject subject;
+    int subjectID;
+    List<Map<String, dynamic>> tagsMap;
+    //gel all subject maps
+    List<Map> subjectListMap = await db.query("subject");
+
+    if (subjectListMap.isEmpty) {
+      return null;
+    }
+    //If not return Subject Objects
+    await Future.forEach(subjectListMap, (subjectMap) async {
+      //convert SubjectMap to Subject object
+      subject = Subject.fromMap(subjectMap);
+      subjectID = subject.id;
+      tagsMap = await getTagsBySubjectID(subjectID);
+      //Create tags for each subject
+      Set<String> tagsOfSubject = <String>{};
+      await Future.forEach(
+          tagsMap, (mapOfTag) => tagsOfSubject.add(mapOfTag["name"]));
+    });
+    listOfSubjects.add(subject);
+    print("total subject count" + listOfSubjects.length.toString());
+    return listOfSubjects;
+  }
+
+  Future<Set<String>> getAllTags() async {
+    final Database db = await database;
+    Set<String> tags = <String>{};
+    List<Map> listOfTagMaps = await db.query("tags");
+    if (listOfTagMaps.isEmpty) {
+      return null;
+    }
+    await Future.forEach(listOfTagMaps, (element) => tags.add(element["name"]));
+    return tags;
+  }
+
+  Future<List<Map<String, dynamic>>> getTagsBySubjectID(int subjectID) async {
+    final Database db = await database;
+    return await db.rawQuery('''
+    SELECT t.name FROM subject s
+        INNER JOIN subject_tags st ON
+        s.id = st.subject_id
+        JOIN tags t ON
+        st.tag_id = t.id
+        WHERE s.id =  $subjectID ''');
   }
 }
