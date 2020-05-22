@@ -69,4 +69,5 @@ BEGIN
     );
 END;
 ''';
+  static const String pragmaForeingKey = '''PRAGMA foreign_keys = on;''';
 }

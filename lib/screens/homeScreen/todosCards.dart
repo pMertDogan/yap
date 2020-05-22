@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
@@ -27,16 +29,19 @@ class ToDosCards extends StatelessWidget {
             ? child
             : Container(
                 child: ListView.builder(
+                    physics: ScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: subjectList.length,
                     itemBuilder: (context, index) {
                       return ListTile(
                         title: Text(subjectList[index].title),
-                        subtitle: Text(subjectList[index].explanation ?? ""),
+                        subtitle: Text(
+                            subjectList[index].tags.toString() ?? "tags yok"),
+                        //subtitle: Text(subjectList[index].explanation ?? ""),
                         leading: subjectList[index].picLocal != null
                             ? CircleAvatar(
-                                backgroundImage:
-                                    AssetImage(subjectList[index].picLocal),
+                                backgroundImage: FileImage(
+                                    File(subjectList[index].picLocal)),
                               )
                             : null,
                       );

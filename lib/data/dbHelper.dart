@@ -21,16 +21,20 @@ class DatabaseHelper {
         // Set the path to the database. Note: Using the `join` function from the
         // `path` package is best practice to ensure the path is correctly
         // constructed for each platform.
-        join(await getDatabasesPath(), 'yap_database_6.db'),
-        version: 1, onCreate: (db, version) async {
-      //Create required tables
-      await db.execute(SQLTables.userTable);
-      await db.execute(SQLTables.subjectTable);
-      await db.execute(SQLTables.subjectTodoTable);
-      await db.execute(SQLTables.todosTable);
-      await db.execute(SQLTables.friendsTable);
-      print("new SQLite database created ");
-    });
+        join(await getDatabasesPath(), 'yap_database_9.db'),
+        version: 1,
+        //enable cascade delete
+        onConfigure: (db) async => await db.execute(SQLTables.pragmaForeingKey),
+        onCreate: (db, version) async {
+          //Create required tables
+          await db.execute(SQLTables.userTable);
+          await db.execute(SQLTables.subjectTable);
+          await db.execute(SQLTables.subjectTodoTable);
+          await db.execute(SQLTables.todosTable);
+          await db.execute(SQLTables.friendsTable);
+
+          print("new SQLite database created ");
+        });
   }
 
   Future<void> singOut() {
@@ -125,7 +129,7 @@ class DatabaseHelper {
     List<Subject> listOfSubjects = <Subject>[];
     Subject subject;
     int subjectID;
-    List<Map<String, dynamic>> tagsMap;
+    List<Map<String, dynamic>> subjectTagsMap;
     //gel all subject maps
     List<Map> subjectListMap = await db.query("subject");
 
@@ -137,14 +141,15 @@ class DatabaseHelper {
       //convert SubjectMap to Subject object
       subject = Subject.fromMap(subjectMap);
       subjectID = subject.id;
-      tagsMap = await getTagsBySubjectID(subjectID);
-      //Create tags for each subject
-      Set<String> tagsOfSubject = <String>{};
+      //Get tags List<map> from local
+      subjectTagsMap = await getTagsBySubjectID(subjectID);
+
+      //Add each tag to Subject object
       await Future.forEach(
-          tagsMap, (mapOfTag) => tagsOfSubject.add(mapOfTag["name"]));
+          subjectTagsMap, (mapOfTag) => subject.tags.add(mapOfTag["name"]));
+      listOfSubjects.add(subject);
     });
-    listOfSubjects.add(subject);
-    print("total subject count" + listOfSubjects.length.toString());
+
     return listOfSubjects;
   }
 

@@ -18,6 +18,8 @@ class AddNewToDoUI extends StatelessWidget {
       tag: "ToDo",
       observe: () => RM.get<AddSubjectVM>(),
       builder: (context, addSubjectVMRM) {
+        //ekleme işlemi sonrası subject sıfırlanıyor
+
         List<ToDo> _toDoList = addSubjectVMRM.state.subject.toDoList;
         int toDoIndex = addSubjectVMRM.state.toDoIndex;
 
@@ -71,7 +73,7 @@ class AddNewToDoUI extends StatelessWidget {
                       child: TextFormField(
                         controller: _controllerTitle,
                         onChanged: (input) {
-                          print(input);
+                          //print(input);
                           rmKeyTitle.state = input;
                           return addSubjectVMRM
                               .state.subject.toDoList[toDoIndex].title = input;

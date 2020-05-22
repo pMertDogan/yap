@@ -1,14 +1,14 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_mapbox_autocomplete/flutter_mapbox_autocomplete.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:states_rebuilder/states_rebuilder.dart';
 import 'package:todo/data/models/friend.dart';
 import 'package:todo/data/models/subject.dart';
-import 'package:todo/data/models/todo.dart';
 import 'package:todo/data/dbHelper.dart';
+import 'package:todo/state/subjectVM.dart';
+import 'package:todo/state/userVM.dart';
 
 class AddSubjectVM {
-  final DatabaseHelper databaseHelper;
-
+  final DatabaseHelper databaseHelper = IN.get<DatabaseHelper>();
   //Create a subject object for tempory changes
   Subject subject = Subject();
 
@@ -24,17 +24,29 @@ class AddSubjectVM {
 
   //Tags tempory
   Set<int> tagChipsSelect = <int>{};
+  //to store tempary tags
   Set<String> tags = <String>{}; // "toplantı" , "yemek"
 
   //ToDo List
-  List<ToDo> toDoList = <ToDo>[ToDo()];
+  //List<ToDo> toDoList = <ToDo>[ToDo()];
   int toDoIndex = 0;
 
-  AddSubjectVM(this.databaseHelper,
-      {@required this.friendList, @required this.tags}) {
-    print("Created AddSubjectVM with friendList  ${friendList.length}");
-    print("Created AddSubjectVM with tags  ${tags.toString()}");
-    selectedFriendList = List.generate(friendList.length, (index) => false);
+  //AddSubjectVM(this.databaseHelper, this.userVM, this.subjectVM) {
+  AddSubjectVM() {
+    RM.get<UserVM>().listenToRM((rm) {
+      if (rm.state.user != null) {
+        friendList = rm.state.user.friends;
+        print("addSubjectVM friends updated" + friendList.toString());
+        selectedFriendList = friendList.isEmpty
+            ? <bool>[]
+            : List.generate(friendList.length, (index) => false);
+      }
+    });
+
+    RM.get<SubjectVM>().listenToRM((subjectVM) {
+      print("addSubjectVM tags updated");
+      tags = subjectVM.state.tags.isEmpty ? <String>{} : subjectVM.state.tags;
+    });
   }
 
   set startDate(String value) {
@@ -79,5 +91,12 @@ class AddSubjectVM {
       tagChipsSelect
           .forEach((index) => subject.tags.add(tags.elementAt(index)));
     }
+  }
+
+  void clearFields() {
+    tags.clear();
+    tagChipsSelect.clear();
+    subject = new Subject();
+    toDoIndex = 0;
   }
 }

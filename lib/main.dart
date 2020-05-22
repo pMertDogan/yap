@@ -47,7 +47,9 @@ class MyApp extends StatelessWidget {
           },
           afterRebuild: (context, userVMRM) {
             if (userVMRM.state.user != null) {
-              RM.get<SubjectVM>().setState((s) => s.getAllSubjects());
+              RM
+                  .get<SubjectVM>()
+                  .setState((s) => s.getAllSubjects(), silent: true);
             }
           },
         );

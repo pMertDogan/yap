@@ -20,6 +20,8 @@ class AddNewSubjectButton extends StatelessWidget {
             final a = RM.get<AddSubjectVM>();
             a.state.addTagsToSubject();
             await s.addSubject(a.state.subject);
+            //remove tags for new subjects
+            a.state.clearFields();
           }, onData: (_, __) => Navigator.pop(context));
         },
         child: AnimatedContainer(

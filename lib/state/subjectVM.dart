@@ -1,6 +1,8 @@
+import 'package:states_rebuilder/states_rebuilder.dart';
 import 'package:todo/data/dbHelper.dart';
 import 'package:todo/data/models/subject.dart';
 import 'package:todo/data/base/subjectBase.dart';
+import 'package:todo/state/userVM.dart';
 
 class SubjectVM implements SubjectBase {
   Set<int> tagChipsSelect = <int>{};
@@ -46,5 +48,7 @@ class SubjectVM implements SubjectBase {
     listOfSubjects = await databaseHelper.getAllSubjects() ?? <Subject>[];
     tags = await databaseHelper.getAllTags() ?? <String>{};
     tagChipsSelect = List.generate(tags.length, (index) => index).toSet();
+    print("subjectVM getAll subjects length: " +
+        listOfSubjects.length.toString());
   }
 }
