@@ -1,10 +1,9 @@
 import 'dart:io';
 
-import 'package:states_rebuilder/states_rebuilder.dart';
-import 'package:todo/data/dbHelper.dart';
-import 'package:todo/data/models/subject.dart';
-import 'package:todo/data/models/user.dart';
 import 'package:todo/data/base/authBase.dart';
+import 'package:todo/data/dbHelper.dart';
+import 'package:todo/data/models/friend.dart';
+import 'package:todo/data/models/user.dart';
 
 class UserVM implements AuthBase {
   //Cloud
@@ -85,5 +84,12 @@ class UserVM implements AuthBase {
     //TODO Update local sqflite
     user.photoURL = photoURL;
     return photoURL;
+  }
+
+  @override
+  Future<void> addFriend(Friend friend) {
+    print("USERVM add friend user : " + user.toString());
+    Set<Friend> updatedUserSet = user.friends..add(friend);
+    user = user.copyWith(friends: updatedUserSet);
   }
 }

@@ -14,15 +14,17 @@ class Subject {
       startDate,
       endDate,
       startTime,
-      endTime;
+      endTime,
+      locationName;
+
   bool completed; //= false;
 
   //Custom fields - from other Tables
-  List<ToDo> toDoList;
-  List<Alarms> listOfAlarms;
-  List<Friend> contributors;
   Set<String> tags;
-  List<double> latLngList = <double>[];
+  List<ToDo> toDoList;
+  List<Friend> contributors;
+  List<double> latLngList;
+  List<Alarms> listOfAlarms;
 
   Subject({
     this.id,
@@ -34,17 +36,19 @@ class Subject {
     this.endDate,
     this.startTime,
     this.endTime,
-    this.contributors,
-    this.listOfAlarms,
     this.completed,
+    this.locationName,
     int priority,
-    tags,
+    List<Friend> contributors,
+    Set<String> tags,
     List<ToDo> toDoList,
     List<double> latLng,
+    this.listOfAlarms,
   })  : this.latLngList = latLng ?? <double>[],
         this.priority = priority ?? 0,
-        this.toDoList = <ToDo>[ToDo()],
-        this.tags = tags ?? <String>{};
+        this.toDoList = <ToDo>[ToDo(title: "")],
+        this.tags = tags ?? <String>{},
+        this.contributors = contributors ?? <Friend>[];
 
   @override
   String toString() {
@@ -76,24 +80,24 @@ class Subject {
       "start_time": convertedStartTime,
       "end_date": convertedEndDate,
       "end_time": convertedEndTime,
+      "location_name": this.locationName,
       "priority": this.priority,
+      "lat": this.latLngList.isEmpty ? null : latLngList[0].toString(),
+      "lng": this.latLngList.isEmpty ? null : latLngList[1].toString()
       //"completed": this.completed ? 1 : 0, // True => 1 False => 0
     };
   }
 
   List<Map<String, String>> toTagsMap() {
     //Return Map for Subject Table
+    //add completed field to map ?
     return List.generate(tags.length,
         (index) => <String, String>{"name": tags.elementAt(index)});
-//    List<Map<String, String>> listOftagMap = [];
-//
-//    if (tags.isNotEmpty) {
-//      //Convert each tag to Map
-//      tags.forEach((element) {
-//        listOftagMap.add(<String, String>{"name": element});
-//      });
-//    }
-//    return listOftagMap;
+  }
+
+  List<Map<String, dynamic>> toFriendsMap() {
+    return List.generate(
+        contributors.length, (index) => contributors[index].toMap());
   }
 
   factory Subject.fromMap(Map<String, dynamic> map) {
@@ -108,12 +112,16 @@ class Subject {
       endDate: map['end_date'] as String,
       startTime: map['start_time'] as String,
       endTime: map['end_time'] as String,
+      locationName: map['location_name'] as String,
       completed: map['completed'] == 0 ? false : true,
       toDoList: map['toDoList'] as List<ToDo>,
       listOfAlarms: map['listOfAlarms'] as List<Alarms>,
       contributors: map['contributors'] as List<Friend>,
       tags: map['tags'] as Set<String>,
-      latLng: map['latLngList'] as List<double>,
+      latLng: <double>[
+        double.tryParse(map["lat"] ?? ""), //to avoid null .lenght error
+        double.tryParse(map["lng"] ?? "")
+      ],
     );
   }
 }

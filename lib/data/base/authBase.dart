@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:todo/data/models/friend.dart';
 import 'package:todo/data/models/user.dart';
 
 abstract class AuthBase {
@@ -8,4 +9,5 @@ abstract class AuthBase {
   Future<String> changeUserPhoto(File photo);
   bool passwordReset(String email);
   Future<User> getCurrentUser();
+  Future<void> addFriend(Friend friend);
 }

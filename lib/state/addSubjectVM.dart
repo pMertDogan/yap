@@ -1,9 +1,9 @@
 import 'package:flutter_mapbox_autocomplete/flutter_mapbox_autocomplete.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
+import 'package:todo/data/dbHelper.dart';
 import 'package:todo/data/models/friend.dart';
 import 'package:todo/data/models/subject.dart';
-import 'package:todo/data/dbHelper.dart';
 import 'package:todo/state/subjectVM.dart';
 import 'package:todo/state/userVM.dart';
 
@@ -20,7 +20,7 @@ class AddSubjectVM {
 
   //Contributor
   Set<Friend> friendList;
-  List<bool> selectedFriendList;
+  List<bool> selectedFriendList = <bool>[];
 
   //Tags tempory
   Set<int> tagChipsSelect = <int>{};
@@ -31,21 +31,21 @@ class AddSubjectVM {
   //List<ToDo> toDoList = <ToDo>[ToDo()];
   int toDoIndex = 0;
 
-  //AddSubjectVM(this.databaseHelper, this.userVM, this.subjectVM) {
   AddSubjectVM() {
-    RM.get<UserVM>().listenToRM((rm) {
-      if (rm.state.user != null) {
-        friendList = rm.state.user.friends;
-        print("addSubjectVM friends updated" + friendList.toString());
-        selectedFriendList = friendList.isEmpty
-            ? <bool>[]
-            : List.generate(friendList.length, (index) => false);
-      }
+    RM.get<SubjectVM>().listenToRM((subjectVM) {
+      print("addSubjectVM updated tags : " + subjectVM.state.tags.toString());
+      tags = subjectVM.state.tags ?? <String>{};
     });
 
-    RM.get<SubjectVM>().listenToRM((subjectVM) {
-      print("addSubjectVM tags updated");
-      tags = subjectVM.state.tags.isEmpty ? <String>{} : subjectVM.state.tags;
+    RM.get<UserVM>().listenToRM((rm) {
+      if (rm.state.user != null) {
+        print("AddSUBJECTVM updated friends : " +
+            rm.state.user.friends.toString());
+        friendList = rm.state.user.friends;
+        selectedFriendList = rm.state.user.friends.isEmpty
+            ? <bool>[]
+            : List.generate(rm.state.user.friends.length, (index) => false);
+      }
     });
   }
 
@@ -75,7 +75,8 @@ class AddSubjectVM {
       }
     }
     subject.contributors = dummyFriends;
-    print(dummyFriends.toList());
+    print(
+        "changeContributors addsubjectVM " + dummyFriends.toList().toString());
   }
 
   void addTag(String yeniTag) {

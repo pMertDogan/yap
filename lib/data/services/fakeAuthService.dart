@@ -1,8 +1,9 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:todo/data/models/user.dart';
 import 'package:todo/data/base/authBase.dart';
+import 'package:todo/data/models/friend.dart';
+import 'package:todo/data/models/user.dart';
 
 class FakeAuthService implements AuthBase {
   User user;
@@ -33,6 +34,9 @@ class FakeAuthService implements AuthBase {
     await Future.delayed(Duration(seconds: 1));
     //Generate fake user
     user = User(id: Random().nextInt(763), email: email, name: name);
+    user.friends
+        .add(Friend(id: 70, userName: "Abra Denk", email: "ayla@mail.co"));
+    user.friends.add(Friend(id: 71, userName: "Mert", email: "ayla@mail.co"));
     //Upload user photo and change it
     if (userImage != null) {
       user.photoURL = await changeUserPhoto(userImage);
@@ -48,5 +52,11 @@ class FakeAuthService implements AuthBase {
         "https://picsum.photos/id/${Random().nextInt(50)}/300/300"; //70/70
     print("fake auth fakeurl " + fakeURL);
     return fakeURL;
+  }
+
+  @override
+  Future<void> addFriend(Friend friend) {
+    // TODO: implement addFriend
+    throw UnimplementedError();
   }
 }

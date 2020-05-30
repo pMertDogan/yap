@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_mapbox_autocomplete/flutter_mapbox_autocomplete.dart';
 import 'package:latlong/latlong.dart';
-
 import 'package:states_rebuilder/states_rebuilder.dart';
 import 'package:todo/state/addSubjectVM.dart';
 import 'package:todo/utility/colors.dart';
@@ -30,9 +29,8 @@ class _LocationState extends State<Location> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => buildLocationSelect(context),
-      child: AnimatedContainer(
-        duration: Duration(seconds: 1),
-        height: addSubjectVMRM.state.subject.latLngList.isEmpty ? 70 : 250,
+      child: Container(
+        height: addSubjectVMRM.state.subject.latLngList.isEmpty ? 70 : 300,
         child: StateBuilder<AddSubjectVM>(
           observe: () => addSubjectVMRM,
           builder: (context, _) {
@@ -116,13 +114,13 @@ class _LocationState extends State<Location> {
               lng = place.geometry.coordinates[0];
 
           addSubjectVMRM.setState((state) {
-            print(place.placeName);
+            print("Location.dart  selected place name " + place.placeName);
             if (state.mapBoxPlace != null) {
               _mapController.move(LatLng(lat, lng), 13);
             }
             state.mapBoxPlace = place;
+            state.subject.locationName = place.placeName;
             return state.subject.latLngList = <double>[lat, lng];
-            //return state.latLngValues = <double>[lat, lng];
           });
         },
         limit: 10,

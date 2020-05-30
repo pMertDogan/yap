@@ -12,6 +12,8 @@ class ContributorsSelect extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final addSubjectVMRM = RM.get<AddSubjectVM>();
+    Set<Friend> friendsList;
+    List<bool> _selected;
 
     return Container(
       height: 120,
@@ -26,11 +28,13 @@ class ContributorsSelect extends StatelessWidget {
         ),
         builderWithChild: (context, userVMRM, child) {
           //Friend List
-          Set<Friend> friendsList = userVMRM.state.user.friends;
+          friendsList = userVMRM.state.user.friends;
+          //print("contributors friend list " + friendsList.toString());
           //list for check state of the friends (selected..)
-          List<bool> _selected = addSubjectVMRM.state.selectedFriendList;
+          _selected = addSubjectVMRM.state.selectedFriendList;
+          //print("contributors selected " + _selected.toString());
 
-          return friendsList.length == 0
+          return _selected.isEmpty
               ? child //Rebuild optimization
               : ListView.builder(
                   scrollDirection: Axis.horizontal,
@@ -51,7 +55,8 @@ class ContributorsSelect extends StatelessWidget {
                               radius: 35,
                               backgroundImage: NetworkImage(
                                   "https://picsum.photos/id/${index + 2}/70/70"),
-                              child: _selected[index]
+                              child: _selected[
+                                      index] // RangeError (index): Invalid value: Valid value range is empty: 0
                                   ? Container(
                                       decoration: BoxDecoration(
                                           color:
@@ -71,7 +76,8 @@ class ContributorsSelect extends StatelessWidget {
                             Padding(
                               padding: const EdgeInsets.only(top: 8.0),
                               child: Text(
-                                friendsList.elementAt(index).userName,
+                                friendsList.elementAt(index).userName ??
+                                    "username Null",
                               ),
                             )
                           ],

@@ -35,8 +35,9 @@ class ToDosCards extends StatelessWidget {
                     itemBuilder: (context, index) {
                       return ListTile(
                         title: Text(subjectList[index].title),
-                        subtitle: Text(
-                            subjectList[index].tags.toString() ?? "tags yok"),
+                        subtitle:
+                            Text(subjectList[index].contributors.toString()),
+                        //    subjectList[index].tags.toString() ?? "tags yok"),
                         //subtitle: Text(subjectList[index].explanation ?? ""),
                         leading: subjectList[index].picLocal != null
                             ? CircleAvatar(

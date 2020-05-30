@@ -23,16 +23,17 @@ class AddNewToDoUI extends StatelessWidget {
         List<ToDo> _toDoList = addSubjectVMRM.state.subject.toDoList;
         int toDoIndex = addSubjectVMRM.state.toDoIndex;
 
-        //Set title text to old value
+        //Set title text to saved value
         TextEditingController _controllerTitle = TextEditingController()
           ..text = _toDoList[toDoIndex].title
+          //move cursor to end
           ..selection = TextSelection.fromPosition(
-              TextPosition(offset: _toDoList[toDoIndex].title.length));
-        //Set explanation text to old value
+              TextPosition(offset: (_toDoList[toDoIndex].title ?? "").length));
+        //Set explanation text to saved value
         TextEditingController _controllerExplanation = TextEditingController()
           ..text = _toDoList[toDoIndex].explanation
-          ..selection = TextSelection.fromPosition(
-              TextPosition(offset: _toDoList[toDoIndex].explanation.length));
+          ..selection = TextSelection.fromPosition(TextPosition(
+              offset: (_toDoList[toDoIndex].explanation ?? "").length));
 
         RMKey<String> rmKeyTitle = RMKey<String>("");
 
@@ -125,7 +126,7 @@ class AddNewToDoUI extends StatelessWidget {
                 FlatButton(
                   onPressed: () {
                     if (toDoIndex > 0) {
-                      rmKeyTitle.state = _toDoList[toDoIndex - 1].explanation;
+                      rmKeyTitle.state = _toDoList[toDoIndex - 1].title;
                       addSubjectVMRM.setState((s) => s.toDoIndex = --toDoIndex,
                           filterTags: ["ToDo"]);
                     }
@@ -154,15 +155,13 @@ class AddNewToDoUI extends StatelessWidget {
                   ),
                 ),
                 StateBuilder<String>(
-                  observe: () =>
-                      RM.create<String>(_toDoList[toDoIndex].explanation),
+                  observe: () => RM.create<String>(_toDoList[toDoIndex].title),
                   rmKey: rmKeyTitle,
                   builder: (context, titleString) => FlatButton(
                     onPressed: titleString.state.length > 3
                         ? () => addSubjectVMRM.setState((s) {
-                              s.subject.toDoList.add(ToDo());
-                              rmKeyTitle.state =
-                                  _toDoList[toDoIndex + 1].explanation;
+                              s.subject.toDoList.add(ToDo(title: ""));
+                              rmKeyTitle.state = _toDoList[toDoIndex + 1].title;
                               s.toDoIndex = ++toDoIndex;
                             }, filterTags: ["ToDo"])
                         : null,

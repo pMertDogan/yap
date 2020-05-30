@@ -37,22 +37,22 @@ class MyApp extends StatelessWidget {
       onError: (error) => Text(error.toString()),
       onData: (_) {
         return StateBuilder(
-          //Observe UserVM
-          observe: () => RM.get<UserVM>(),
-          //Watch user status
-          watch: (userVMRM) => userVMRM.state.user,
-          //If User != null redirect to homepage
-          builder: (_, userVMRM) {
-            return userVMRM.state.user != null ? HomeScreen() : LoginScreen();
-          },
-          afterRebuild: (context, userVMRM) {
-            if (userVMRM.state.user != null) {
-              RM
-                  .get<SubjectVM>()
-                  .setState((s) => s.getAllSubjects(), silent: true);
-            }
-          },
-        );
+            //Observe UserVM
+            observe: () => RM.get<UserVM>(),
+            //Watch user status
+            watch: (userVMRM) => userVMRM.state.user,
+            //If User != null redirect to homepage
+            builder: (_, userVMRM) {
+              return userVMRM.state.user != null ? HomeScreen() : LoginScreen();
+            },
+            afterRebuild: (context, userVMRM) {
+              if (userVMRM.state.user != null) {
+                userVMRM.setState((s) async => await RM
+                    .get<SubjectVM>()
+                    .setState((s) async => await s.getAllSubjects(),
+                        silent: true));
+              }
+            });
       },
     );
   }

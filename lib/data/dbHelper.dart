@@ -1,6 +1,8 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:todo/data/models/friend.dart';
 import 'package:todo/data/models/subject.dart';
+import 'package:todo/data/models/todo.dart';
 import 'package:todo/data/models/user.dart';
 import 'package:todo/utility/sqlTables.dart';
 
@@ -21,7 +23,7 @@ class DatabaseHelper {
         // Set the path to the database. Note: Using the `join` function from the
         // `path` package is best practice to ensure the path is correctly
         // constructed for each platform.
-        join(await getDatabasesPath(), 'yap_database_9.db'),
+        join(await getDatabasesPath(), 'yap_database_m.db'),
         version: 1,
         //enable cascade delete
         onConfigure: (db) async => await db.execute(SQLTables.pragmaForeingKey),
@@ -29,30 +31,61 @@ class DatabaseHelper {
           //Create required tables
           await db.execute(SQLTables.userTable);
           await db.execute(SQLTables.subjectTable);
-          await db.execute(SQLTables.subjectTodoTable);
-          await db.execute(SQLTables.todosTable);
+          await db.execute(SQLTables.subjectTagsTable);
+          await db.execute(SQLTables.tagsTable);
           await db.execute(SQLTables.friendsTable);
-
-          print("new SQLite database created ");
+          await db.execute(SQLTables.subjectContributorsTable);
+          await db.execute(SQLTables.todosTable);
+          print("DBHELPER new SQLite database created ");
         });
   }
 
   Future<void> singOut() {
-    database.then((db) async {
-      await db.delete("user");
+    database.then((db) {
+      db
+        ..transaction((txn) async {
+          await txn.delete("user");
+          await txn.delete("friends");
+          await txn.delete("tags");
+        });
     });
   }
 
   Future<void> saveUser(User user) async {
+    await database
+      ..transaction((txn) async {
+        //save user
+        await txn.insert("user", user.toMap());
+        //save friends
+        Future.forEach(
+            user.friends,
+            (Friend friend) async =>
+                await txn.insert("friends", friend.toMap()));
+      });
+  }
+
+  Future<void> addFriend(Friend friend) async {
     final Database db = await database;
-    int rowID = await db.insert("user", user.toMap());
+    await db.insert("friends", friend.toMap());
   }
 
   Future<User> getCurrentUser() async {
     final Database db = await database;
     //Avoid null Result
     List<Map> listOfUsersMap = await db.rawQuery("SELECT * FROM user ");
-    User user = listOfUsersMap.isEmpty ? null : User.fromMap(listOfUsersMap[0]);
+    User user;
+    if (listOfUsersMap.isNotEmpty) {
+      //select first user
+      user = User.fromMap(listOfUsersMap[0]);
+      // get friend list
+      List<Map<String, dynamic>> friendList =
+          await db.rawQuery("SELECT * FROM friends ");
+      user.friends = List.generate(
+              friendList.length, (index) => Friend.fromMap(friendList[index]))
+          .toSet();
+      print("DBHELPER getCurrentUser user friends count " +
+          user.friends.length.toString());
+    }
     print("local sqflite user consumed " + user.toString());
     return user;
   }
@@ -75,17 +108,17 @@ class DatabaseHelper {
       *   Add subject primitive values to subject Table
       *   Add subject tags to tags Table
       *   Connect subject and tags table with many yo many relationship
-      *
+      *   add friends to table
       *
       *
       * */
         //Create subject to map with all required fields
         int userID = user.id;
         Map<String, dynamic> mapToAddedTable = {"user_id": userID};
+
+        // add subject
         mapToAddedTable.addAll(subject.toSubjectMap());
         int subjectID = await txn.insert("subject", mapToAddedTable);
-        print("DBHELPER subject added");
-
         //Store inserted tags ids
         List<int> idsOfTags = <int>[];
         List<Map<String, String>> tagsMapList = subject.toTagsMap();
@@ -102,7 +135,9 @@ class DatabaseHelper {
             } else {
               //Retrive already added tag ID
               List<Map> tagResult = await txn.query("tags",
-                  where: '"name" = ?', whereArgs: [tagMap["name"]]);
+                  //where: '"name" = ?', whereArgs: [tagMap["name"]]);
+                  where: "name = ?",
+                  whereArgs: [tagMap["name"]]);
               idsOfTags.add(tagResult[0]["id"]);
             }
           }));
@@ -118,12 +153,28 @@ class DatabaseHelper {
             await txn.insert("subject_tags", tagToMap);
           },
         );
-        //return subjectID;
+        //To Do operation
+        await Future.forEach(subject.toDoList, (ToDo todo) {
+          Map<String, dynamic> todoMap = todo.toMap();
+          todoMap["subject_id"] = subjectID;
+          return txn.insert("todos", todoMap);
+        });
+        //subject_contributors
+        print("contributors  dbHelper");
+        await Future.forEach(subject.contributors, (Friend contributor) async {
+          Map<String, dynamic> contributorToMap = {
+            "subject_id": subjectID,
+            "friend_id": contributor.id
+          };
+          await txn.insert("subject_contributors", contributorToMap);
+        });
+        print("contributors end  dbHelper");
       },
     );
   }
 
   Future<List<Subject>> getAllSubjects() async {
+    print("DBHELPER getAllSubject called ");
     final Database db = await database;
     //to Hold created subjects
     List<Subject> listOfSubjects = <Subject>[];
@@ -138,21 +189,27 @@ class DatabaseHelper {
     }
     //If not return Subject Objects
     await Future.forEach(subjectListMap, (subjectMap) async {
+      print("DBHELPER 1 ");
       //convert SubjectMap to Subject object
       subject = Subject.fromMap(subjectMap);
+      print("DBHELPER 2 ");
       subjectID = subject.id;
       //Get tags List<map> from local
       subjectTagsMap = await getTagsBySubjectID(subjectID);
-
       //Add each tag to Subject object
-      await Future.forEach(
-          subjectTagsMap, (mapOfTag) => subject.tags.add(mapOfTag["name"]));
+      await Future.forEach(subjectTagsMap, (mapOfTag) {
+        subject.tags.add(mapOfTag["name"]);
+      });
+      //to do
+      subject.toDoList = await getToDosBySubjectID(subjectID);
+      // contributors
+      subject.contributors = await getContributorsByID(subjectID);
       listOfSubjects.add(subject);
     });
-
     return listOfSubjects;
   }
 
+//TAGS
   Future<Set<String>> getAllTags() async {
     final Database db = await database;
     Set<String> tags = <String>{};
@@ -173,5 +230,38 @@ class DatabaseHelper {
         JOIN tags t ON
         st.tag_id = t.id
         WHERE s.id =  $subjectID ''');
+  }
+
+//TO DOS
+  Future<List<ToDo>> getToDosBySubjectID(int subjectID) async {
+    final Database db = await database;
+    List<ToDo> todosList = <ToDo>[];
+    List<Map<String, dynamic>> todosMapList = await db
+        .query("todos", where: "subject_id = ?", whereArgs: [subjectID]);
+    Future.forEach(
+        todosMapList, (element) => todosList.add(ToDo.fromMap(element)));
+    return todosList;
+  }
+
+// Contributors aka Friends
+  Future<List<Friend>> getContributorsByID(int subjectID) async {
+    final Database db = await database;
+    print("subject id " + subjectID.toString());
+    List contributorsListMap = await db.rawQuery('''
+SELECT f.id,
+       f.email,
+       f.name,
+       f.photo_local,
+       f.photo_url
+  FROM subject s
+       JOIN
+       subject_contributors sc ON sc.subject_id = s.id
+       JOIN
+       friends f ON f.id = sc.friend_id
+   WHERE s.id =  $subjectID;
+    ''');
+    print("lenght of contributors " + contributorsListMap.length.toString());
+    return List.generate(contributorsListMap.length,
+        (index) => Friend.fromMap(contributorsListMap[index]));
   }
 }
