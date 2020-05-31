@@ -45,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(
               height: 8,
             ),
-            DaysUI(blue: blue),
+            DaysUI(),
             const SizedBox(
               height: 8,
             ),

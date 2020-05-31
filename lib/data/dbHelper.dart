@@ -42,15 +42,15 @@ class DatabaseHelper {
 
   Future<void> singOut() {
     database.then((db) {
-      db
-        ..transaction((txn) async {
-          await txn.delete("user");
-          await txn.delete("friends");
-          await txn.delete("tags");
-        });
+      db.transaction((txn) async {
+        await txn.delete("user");
+        await txn.delete("friends");
+        await txn.delete("tags");
+      });
     });
   }
 
+  //user
   Future<void> saveUser(User user) async {
     await database
       ..transaction((txn) async {
@@ -62,11 +62,6 @@ class DatabaseHelper {
             (Friend friend) async =>
                 await txn.insert("friends", friend.toMap()));
       });
-  }
-
-  Future<void> addFriend(Friend friend) async {
-    final Database db = await database;
-    await db.insert("friends", friend.toMap());
   }
 
   Future<User> getCurrentUser() async {
@@ -90,13 +85,7 @@ class DatabaseHelper {
     return user;
   }
 
-  Future<void> removeUnusedTags() async {
-    //Karşılığı olmayan todoları sil
-    final Database db = await database;
-    await db.execute(
-        "DELETE FROM todos WHERE id NOT IN (SELECT f.todo_id FROM subject_todos f)");
-  }
-
+//Subject
   Future<void> addSubject(Subject subject) async {
     final Database db = await database;
     //Learn user ID
@@ -189,10 +178,8 @@ class DatabaseHelper {
     }
     //If not return Subject Objects
     await Future.forEach(subjectListMap, (subjectMap) async {
-      print("DBHELPER 1 ");
       //convert SubjectMap to Subject object
       subject = Subject.fromMap(subjectMap);
-      print("DBHELPER 2 ");
       subjectID = subject.id;
       //Get tags List<map> from local
       subjectTagsMap = await getTagsBySubjectID(subjectID);
@@ -209,7 +196,43 @@ class DatabaseHelper {
     return listOfSubjects;
   }
 
+  Future<List> getAllSubjectStartDates() async {
+    int totalSubject = 0;
+    List<String> subjectsStartDates = <String>[];
+    List<int> totalSubjectForEachStartDate = <int>[];
+    //Raw SQL code for Group by
+    String sql = ''' 
+    SELECT start_date,
+    count(start_date) AS total_subject
+    FROM subject s
+    GROUP BY start_date
+    ORDER BY s.start_date ASC
+    ''';
+    //get DB then start operation
+    await database.then((db) async {
+      List<Map> groupedSubjects = await db.rawQuery(sql);
+      //Get information using Group by
+      await Future.forEach(groupedSubjects, (element) {
+        subjectsStartDates.add(element["start_date"]);
+        totalSubjectForEachStartDate.add(element["total_subject"]);
+        return totalSubject += element["total_subject"];
+      });
+    });
+    List<dynamic> resultList = [
+      subjectsStartDates,
+      totalSubjectForEachStartDate
+    ];
+    return resultList;
+  }
+
 //TAGS
+  Future<void> removeUnusedTags() async {
+    //Karşılığı olmayan todoları sil
+    final Database db = await database;
+    await db.execute(
+        "DELETE FROM todos WHERE id NOT IN (SELECT f.todo_id FROM subject_todos f)");
+  }
+
   Future<Set<String>> getAllTags() async {
     final Database db = await database;
     Set<String> tags = <String>{};
@@ -248,20 +271,25 @@ class DatabaseHelper {
     final Database db = await database;
     print("subject id " + subjectID.toString());
     List contributorsListMap = await db.rawQuery('''
-SELECT f.id,
-       f.email,
-       f.name,
-       f.photo_local,
-       f.photo_url
-  FROM subject s
-       JOIN
-       subject_contributors sc ON sc.subject_id = s.id
-       JOIN
-       friends f ON f.id = sc.friend_id
-   WHERE s.id =  $subjectID;
+    SELECT f.id,
+           f.email,
+           f.name,
+           f.photo_local,
+           f.photo_url
+      FROM subject s
+           JOIN
+           subject_contributors sc ON sc.subject_id = s.id
+           JOIN
+           friends f ON f.id = sc.friend_id
+       WHERE s.id =  $subjectID;
     ''');
     print("lenght of contributors " + contributorsListMap.length.toString());
     return List.generate(contributorsListMap.length,
         (index) => Friend.fromMap(contributorsListMap[index]));
+  }
+
+  Future<void> addFriend(Friend friend) async {
+    final Database db = await database;
+    await db.insert("friends", friend.toMap());
   }
 }

@@ -61,12 +61,12 @@ class Subject {
     //https://pub.dev/documentation/intl/latest/intl/DateFormat-class.html
     //Return Map for Subject Table
     String convertedStartDate =
-        Jiffy(this.startDate, "dd/MM/yyyy").format("yyyy/MM/dd");
+        Jiffy(this.startDate, "dd/MM/yyyy").format("yyyy-MM-dd");
     String convertedStartTime =
         Jiffy(this.startTime, "HH:mm:ss").format("HH:mm:ss");
     String convertedEndDate, convertedEndTime;
     if (this.endTime != null) {
-      convertedEndDate = Jiffy(this.endDate, "dd/MM/yyyy").format("yyyy/MM/dd");
+      convertedEndDate = Jiffy(this.endDate, "dd/MM/yyyy").format("yyyy-MM-dd");
       convertedEndTime = Jiffy(this.endTime, "HH:mm:ss").format("HH:mm:ss");
     }
 

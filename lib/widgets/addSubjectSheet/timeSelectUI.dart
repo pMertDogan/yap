@@ -140,10 +140,10 @@ class _TimeLineSelectState extends State<TimeLineSelect> {
           : DateTime.now(),
       firstDate: selectForEnd
           ? addSubjectVMRM.state.endDateInitDate
-          : DateTime.now().subtract(Duration(days: 1)),
-      lastDate: !selectForEnd
-          ? addSubjectVMRM.state.startDateLastDate ?? DateTime(2030)
-          : DateTime(2030),
+          : DateTime.now(), //DateTime.now().subtract(Duration(days: 1)),
+      lastDate: selectForEnd
+          ? DateTime(2030)
+          : addSubjectVMRM.state.startDateLastDate ?? DateTime(2030),
       builder: (BuildContext context, Widget child) {
         return Theme(
           data: ThemeData.light(),
@@ -155,7 +155,7 @@ class _TimeLineSelectState extends State<TimeLineSelect> {
       selectedTime =
           await showTimePicker(context: context, initialTime: TimeOfDay.now());
     }
-
+    //if user selected date and time
     if (selectedDate != null && selectedTime != null) {
       savedDateTime = DateTime(selectedDate.year, selectedDate.month,
           selectedDate.day, selectedTime.hour, selectedTime.minute);

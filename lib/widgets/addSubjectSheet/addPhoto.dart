@@ -28,7 +28,6 @@ class _AddPhotoState extends State<AddPhoto> {
           //watch: (s) => s.state.subject.picLocal,
           observe: () => RM.get<AddSubjectVM>(),
           builder: (context, addSubjectVMRM) {
-            //File image = addSubjectVMRM.state.subject.picLocal;
             String image = addSubjectVMRM.state.subject.picLocal;
             return image == null
                 ? IconButton(
@@ -49,11 +48,10 @@ class _AddPhotoState extends State<AddPhoto> {
                 : InkWell(
                     onTap: () async {
                       File _selectedPhoto = await getImage(context);
-                      if (_selectedPhoto != null) {
-                        addSubjectVMRM.setState((s) {
-                          s.subject.picLocal = _selectedPhoto.path;
-                        }, filterTags: ["photo"]);
-                      }
+                      addSubjectVMRM.setState((s) {
+                        s.subject.picLocal =
+                            _selectedPhoto != null ? _selectedPhoto.path : null;
+                      }, filterTags: ["photo"]);
                     },
                     child: Image.file(
                       File(image),

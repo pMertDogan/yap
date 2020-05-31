@@ -5,5 +5,5 @@ abstract class SubjectBase {
   Future<void> deleteSubject(Subject value);
   Future<void> deleteSubjectByIndex(int index);
   Future<void> updateSubject(Subject updatedSubject, int indexToReplace);
-  Future<void> getAllSubjects();
+  Future<void> syncData();
 }

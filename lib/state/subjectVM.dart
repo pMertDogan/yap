@@ -6,7 +6,8 @@ class SubjectVM implements SubjectBase {
   Set<int> tagChipsSelect = <int>{};
   Set<String> tags = <String>{};
   List<Subject> listOfSubjects = <Subject>[];
-
+  List<String> listOfSubjectsStartDates = <String>[];
+  List<int> listOfTotalSubjectCountForEachDay = <int>[];
   final DatabaseHelper databaseHelper;
 
   SubjectVM(this.databaseHelper);
@@ -17,7 +18,7 @@ class SubjectVM implements SubjectBase {
     //save to sqflite
     await databaseHelper.addSubject(value);
     print("subject added to local sql Table");
-    await getAllSubjects();
+    await syncData();
   }
 
   @override
@@ -41,12 +42,15 @@ class SubjectVM implements SubjectBase {
     listOfSubjects[indexToReplace] = updatedSubject;
   }
 
-  @override
-  Future<void> getAllSubjects() async {
+  Future<void> syncData() async {
     listOfSubjects = await databaseHelper.getAllSubjects() ?? <Subject>[];
     tags = await databaseHelper.getAllTags() ?? <String>{};
     tagChipsSelect = List.generate(tags.length, (index) => index).toSet();
     print("SUBJECTVM getAll subjects length: " +
         listOfSubjects.length.toString());
+    await databaseHelper.getAllSubjectStartDates().then((value) {
+      listOfSubjectsStartDates = value[0];
+      return listOfTotalSubjectCountForEachDay = value[1];
+    });
   }
 }
