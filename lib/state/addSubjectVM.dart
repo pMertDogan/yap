@@ -27,14 +27,12 @@ class AddSubjectVM {
   //to store tempary tags
   Set<String> tags = <String>{}; // "toplantı" , "yemek"
 
-  //ToDo List
-  //List<ToDo> toDoList = <ToDo>[ToDo()];
   int toDoIndex = 0;
 
   AddSubjectVM() {
     RM.get<SubjectVM>().listenToRM((subjectVM) {
       print("addSubjectVM updated tags : " + subjectVM.state.tags.toString());
-      tags = subjectVM.state.tags ?? <String>{};
+      tags = subjectVM.state.allTags ?? <String>{};
     });
 
     RM.get<UserVM>().listenToRM((rm) {
@@ -52,8 +50,7 @@ class AddSubjectVM {
   set startDate(String value) {
     subject.startDate = value;
     endDateInitDate =
-        (Jiffy(value, "dd/MM/yyyy").dateTime.add(Duration(hours: 1)))
-            .subtract(Duration(days: 1));
+        (Jiffy(value, "dd/MM/yyyy").dateTime.add(Duration(hours: 1)));
   }
 
   set endDate(value) {

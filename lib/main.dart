@@ -49,7 +49,8 @@ class MyApp extends StatelessWidget {
               if (userVMRM.state.user != null) {
                 userVMRM.setState((s) async => await RM
                     .get<SubjectVM>()
-                    .setState((s) async => await s.syncData(), silent: true));
+                    .setState((s) async => await s.getInitDatas(),
+                        silent: true));
               }
             });
       },

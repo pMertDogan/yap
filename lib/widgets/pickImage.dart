@@ -11,7 +11,7 @@ Future<File> getImage(BuildContext context) async {
       context: context,
       builder: (context) {
         return Container(
-          color: UIColors.kapaliMavi,
+          color: UIColors.darkBlue,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[

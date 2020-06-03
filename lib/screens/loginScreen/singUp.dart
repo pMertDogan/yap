@@ -30,7 +30,7 @@ class SingUpUI extends StatelessWidget {
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                    color: UIColors.kapaliMavi,
+                    color: UIColors.darkBlue,
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(20),
                         topRight: Radius.circular(20))),
@@ -84,7 +84,7 @@ class SingUpUI extends StatelessWidget {
                     child: userVMRM.state.registerAvatar == null
                         ? Icon(
                             Icons.add_a_photo,
-                            color: UIColors.kapaliMavi,
+                            color: UIColors.darkBlue,
                           )
                         : null),
               ),

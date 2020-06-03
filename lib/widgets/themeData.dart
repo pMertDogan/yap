@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:todo/utility/colors.dart';
 
 const Color grey = UIColors.grey;
-const Color blue = UIColors.kapaliMavi;
+const Color blue = UIColors.darkBlue;
 const Color sheetTextColor = UIColors.addSubjectSheetTextColor;
 
 ThemeData buildThemeData() {

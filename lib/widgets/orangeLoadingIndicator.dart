@@ -10,6 +10,6 @@ class OrangeLoadingIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircularProgressIndicator(
         backgroundColor: UIColors.todoOrange,
-        valueColor: new AlwaysStoppedAnimation<Color>(UIColors.kapaliMavi));
+        valueColor: new AlwaysStoppedAnimation<Color>(UIColors.darkBlue));
   }
 }

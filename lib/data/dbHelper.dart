@@ -162,7 +162,8 @@ class DatabaseHelper {
     );
   }
 
-  Future<List<Subject>> getAllSubjects() async {
+  Future<List<Subject>> getSubjects(
+      {String startDate, Set<String> tags}) async {
     print("DBHELPER getAllSubject called ");
     final Database db = await database;
     //to Hold created subjects
@@ -171,10 +172,57 @@ class DatabaseHelper {
     int subjectID;
     List<Map<String, dynamic>> subjectTagsMap;
     //gel all subject maps
-    List<Map> subjectListMap = await db.query("subject");
+    List<Map> subjectListMap = <Map>[];
+    if (startDate == null && tags == null) {
+      //get all subjects
+      subjectListMap = await db.query("subject");
+      print("buraaa 1 ");
+    }
+    //
+    else if (tags != null) {
+      print("buraaa 2 ");
+      String sql = '''
+            SELECT s.id,
+                   s.user_id,
+                   s.title,
+                   s.explanation,
+                   s.pic_url,
+                   s.pic_local,
+                   s.start_date,
+                   s.start_time,
+                   s.end_date,
+                   s.end_time,
+                   s.priority,
+                   s.completed,
+                   s.lat,
+                   s.lng,
+                   s.location_name  FROM subject s
+                   LEFT OUTER JOIN
+                   subject_tags st ON st.subject_id = s.id
+                   LEFT OUTER JOIN
+                   tags t ON t.id = st.tag_id
+                   ''';
+//             WHERE s.start_date = "$startDate"
+//             AND (t.name IN("${tags.join('","')}") OR tag_id IS NULL)
+//             GROUP BY s.id;
+//       ''';
+      sql += startDate != null || tags != null ? ' WHERE ' : "";
+      sql += startDate != null ? ' s.start_date = "$startDate" ' : "";
+      sql += startDate != null ? " AND " : "";
+      sql += startDate != null || tags != null
+          ? '(t.name IN("${tags.join('","')}") OR tag_id IS NULL)'
+          : "";
+      sql += ' GROUP BY s.id;';
+      print("sql query" + sql);
+      subjectListMap = await db.rawQuery(sql);
+    } else if (startDate != null) {
+      subjectListMap = await db
+          .query("subject", where: '"start_date" = ?', whereArgs: [startDate]);
+    }
 
+    //if there is no subject return empty list
     if (subjectListMap.isEmpty) {
-      return null;
+      return <Subject>[];
     }
     //If not return Subject Objects
     await Future.forEach(subjectListMap, (subjectMap) async {
@@ -193,6 +241,7 @@ class DatabaseHelper {
       subject.contributors = await getContributorsByID(subjectID);
       listOfSubjects.add(subject);
     });
+    print("DBHelper number of subjects : " + listOfSubjects.length.toString());
     return listOfSubjects;
   }
 
@@ -238,7 +287,7 @@ class DatabaseHelper {
     Set<String> tags = <String>{};
     List<Map> listOfTagMaps = await db.query("tags");
     if (listOfTagMaps.isEmpty) {
-      return null;
+      return <String>{};
     }
     await Future.forEach(listOfTagMaps, (element) => tags.add(element["name"]));
     return tags;
@@ -247,12 +296,13 @@ class DatabaseHelper {
   Future<List<Map<String, dynamic>>> getTagsBySubjectID(int subjectID) async {
     final Database db = await database;
     return await db.rawQuery('''
-    SELECT t.name FROM subject s
+        SELECT t.name FROM subject s
         INNER JOIN subject_tags st ON
         s.id = st.subject_id
         JOIN tags t ON
         st.tag_id = t.id
-        WHERE s.id =  $subjectID ''');
+        WHERE s.id =  $subjectID 
+        ''');
   }
 
 //TO DOS
@@ -269,7 +319,7 @@ class DatabaseHelper {
 // Contributors aka Friends
   Future<List<Friend>> getContributorsByID(int subjectID) async {
     final Database db = await database;
-    print("subject id " + subjectID.toString());
+    //print("subject id " + subjectID.toString());
     List contributorsListMap = await db.rawQuery('''
     SELECT f.id,
            f.email,
@@ -283,7 +333,7 @@ class DatabaseHelper {
            friends f ON f.id = sc.friend_id
        WHERE s.id =  $subjectID;
     ''');
-    print("lenght of contributors " + contributorsListMap.length.toString());
+    //print("lenght of contributors " + contributorsListMap.length.toString());
     return List.generate(contributorsListMap.length,
         (index) => Friend.fromMap(contributorsListMap[index]));
   }

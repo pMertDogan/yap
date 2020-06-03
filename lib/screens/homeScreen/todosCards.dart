@@ -24,30 +24,35 @@ class ToDosCards extends StatelessWidget {
       ),
       builderWithChild: (context, subjectVMRM, child) {
         List<Subject> subjectList = subjectVMRM.state.listOfSubjects;
-
-        return subjectList.isEmpty
-            ? child
-            : Container(
-                child: ListView.builder(
-                    physics: ScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: subjectList.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(subjectList[index].title),
-                        subtitle:
-                            Text(subjectList[index].contributors.toString()),
-                        //    subjectList[index].tags.toString() ?? "tags yok"),
-                        //subtitle: Text(subjectList[index].explanation ?? ""),
-                        leading: subjectList[index].picLocal != null
-                            ? CircleAvatar(
-                                backgroundImage: FileImage(
-                                    File(subjectList[index].picLocal)),
-                              )
-                            : null,
-                      );
-                    }),
-              );
+        if (subjectList.isEmpty) {
+          return child;
+        } else {
+          return AnimatedOpacity(
+            opacity: subjectVMRM.isWaiting ? 0 : 1,
+            duration: Duration(milliseconds: 200),
+            child: Container(
+              child: ListView.builder(
+                  physics: ScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: subjectList.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(subjectList[index].title),
+                      subtitle: Text(
+                          //subjectList[index].contributors.toString()),
+                          subjectList[index].tags.toString() ?? "tags yok"),
+                      //subtitle: Text(subjectList[index].explanation ?? ""),
+                      leading: subjectList[index].picLocal != null
+                          ? CircleAvatar(
+                              backgroundImage:
+                                  FileImage(File(subjectList[index].picLocal)),
+                            )
+                          : null,
+                    );
+                  }),
+            ),
+          );
+        }
       },
     );
   }

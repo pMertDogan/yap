@@ -21,7 +21,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final Color grey = UIColors.grey;
-  final Color blue = UIColors.kapaliMavi;
+  final Color blue = UIColors.darkBlue;
 
   List<int> chipsSelect = List.generate(10, (index) => index);
 

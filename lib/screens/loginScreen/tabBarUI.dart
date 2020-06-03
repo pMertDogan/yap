@@ -22,7 +22,7 @@ class _TabBarUIState extends State<TabBarUI> {
   Widget build(BuildContext context) {
     return Container(
       height: 50,
-      color: UIColors.kapaliMavi,
+      color: UIColors.darkBlue,
       child: TabBar(
         onTap: (index) {
           loginRMKey.state = index == 1 ? "I have a account" : "Login";

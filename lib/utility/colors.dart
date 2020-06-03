@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class UIColors {
-  static const Color kapaliMavi = Color.fromRGBO(53, 73, 94, 1);
+  static const Color darkBlue = Color.fromRGBO(53, 73, 94, 1);
+  static const Color lightBlue = Color.fromRGBO(81, 114, 151, 1);
   static const Color grey = Color.fromRGBO(216, 216, 216, 1);
   static const Color todoOrange = Color.fromRGBO(255, 94, 91, 1);
   static const Color chipsColor = Color.fromRGBO(59, 59, 59, 1);

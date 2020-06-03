@@ -12,7 +12,7 @@ class TopRow extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
-  final Color blue = UIColors.kapaliMavi;
+  final Color blue = UIColors.darkBlue;
   final Color grey = UIColors.grey;
 
   @override
@@ -72,7 +72,7 @@ class RoundedAvatar extends StatelessWidget {
               width: 70,
               height: 70,
               decoration: BoxDecoration(
-                  color: UIColors.kapaliMavi,
+                  color: UIColors.darkBlue,
                   borderRadius:
                       BorderRadius.only(bottomRight: Radius.circular(8))),
               child: userVMRM.isWaiting

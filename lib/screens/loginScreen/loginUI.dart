@@ -16,7 +16,7 @@ class LoginUI extends StatefulWidget {
 }
 
 class _LoginUIState extends State<LoginUI> {
-  final Color kapaliMavi = UIColors.kapaliMavi;
+  final Color kapaliMavi = UIColors.darkBlue;
   final Color grey = UIColors.grey;
   final userVMRM = RM.get<UserVM>();
 

@@ -8,7 +8,7 @@ class TopInfoArea extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
-  final Color kapaliMavi = UIColors.kapaliMavi;
+  final Color kapaliMavi = UIColors.darkBlue;
   final Color grey = UIColors.grey;
   final List<String> message = UIStrings.loginUIMessage;
 
