@@ -11,6 +11,7 @@ class SubjectVM implements SubjectBase {
   List<String> listOfSubjectsStartDates = <String>[];
   List<int> listOfTotalSubjectCountForEachDay = <int>[];
   int selectedStartDayIndex = 0;
+  String orderByParamater = "Priority";
 
   final DatabaseHelper databaseHelper;
 
@@ -48,8 +49,10 @@ class SubjectVM implements SubjectBase {
 
   Future<void> getInitDatas() async {
     //Is it for all or only for specific start_date?
-    listOfAllSubjects = await databaseHelper.getSubjects();
-    listOfSubjects = await databaseHelper.getSubjects(); //?? <Subject>[];
+    listOfAllSubjects =
+        await databaseHelper.getSubjects(orderBy: orderByParamater);
+    listOfSubjects = await databaseHelper.getSubjects(
+        orderBy: orderByParamater); //?? <Subject>[];
     allTags = await databaseHelper.getAllTags();
     tags = await databaseHelper.getAllTags(); //?? <String>{} if none
     tagChipsSelect = List.generate(tags.length, (index) => index).toSet();
@@ -70,7 +73,8 @@ class SubjectVM implements SubjectBase {
       }).toSet();
       //get filtered tags
       if (selectedStartDayIndex == 0) {
-        listOfSubjects = await databaseHelper.getSubjects(tags: selectedTags);
+        listOfSubjects = await databaseHelper.getSubjects(
+            tags: selectedTags, orderBy: orderByParamater);
       } else {
         listOfSubjects = await databaseHelper.getSubjects(
             //-1 for avoid "All" tab index problem
@@ -83,7 +87,8 @@ class SubjectVM implements SubjectBase {
     //just get subjects by start_date
     else {
       listOfSubjects = await databaseHelper.getSubjects(
-          startDate: listOfSubjectsStartDates[selectedStartDayIndex - 1]);
+          startDate: listOfSubjectsStartDates[selectedStartDayIndex - 1],
+          orderBy: orderByParamater);
       tags.clear();
       await Future.forEach(
           listOfSubjects, (Subject element) => tags.addAll(element.tags));

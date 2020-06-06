@@ -163,7 +163,19 @@ class DatabaseHelper {
   }
 
   Future<List<Subject>> getSubjects(
-      {String startDate, Set<String> tags}) async {
+      {String startDate, Set<String> tags, String orderBy}) async {
+    //['Priority', 'End Date', 'New', 'Old']
+    String convertedOrderBy;
+    if (orderBy == "Priority") {
+      convertedOrderBy = "ORDER BY s.priority DESC";
+    } else if (orderBy == "End Date") {
+      convertedOrderBy = "ORDER BY s.end_date DESC";
+    } else if (orderBy == "Recent") {
+      convertedOrderBy = "ORDER BY s.start_date ASC";
+    } else if (orderBy == "Old") {
+      convertedOrderBy = "ORDER BY s.start_date DESC";
+    }
+
     print("DBHELPER getAllSubject called ");
     final Database db = await database;
     //to Hold created subjects
@@ -175,8 +187,12 @@ class DatabaseHelper {
     List<Map> subjectListMap = <Map>[];
     if (startDate == null && tags == null) {
       //get all subjects
-      subjectListMap = await db.query("subject");
-      print("buraaa 1 ");
+      String sqlQery = 'SELECT * FROM subject s ${convertedOrderBy ?? ""} ';
+      subjectListMap = await db.rawQuery(sqlQery);
+      //subjectListMap = await db.query("subject");
+      //TODO add orderBY
+      print("buraaa 1**************************");
+      print(sqlQery);
     }
     //
     else if (tags != null) {
@@ -205,19 +221,25 @@ class DatabaseHelper {
 //             WHERE s.start_date = "$startDate"
 //             AND (t.name IN("${tags.join('","')}") OR tag_id IS NULL)
 //             GROUP BY s.id;
+//             ORDER BY XXX ASC;
 //       ''';
       sql += startDate != null || tags != null ? ' WHERE ' : "";
       sql += startDate != null ? ' s.start_date = "$startDate" ' : "";
-      sql += startDate != null ? " AND " : "";
+      sql += startDate != null && tags != null ? " AND " : "";
       sql += startDate != null || tags != null
           ? '(t.name IN("${tags.join('","')}") OR tag_id IS NULL)'
           : "";
-      sql += ' GROUP BY s.id;';
+      sql += ' GROUP BY s.id';
+      sql += orderBy == null ? "" : " $convertedOrderBy";
+
       print("sql query" + sql);
       subjectListMap = await db.rawQuery(sql);
     } else if (startDate != null) {
       subjectListMap = await db
-          .query("subject", where: '"start_date" = ?', whereArgs: [startDate]);
+          .rawQuery("Select * FROM subject s WHERE start_date = '$startDate' "
+              "${orderBy == null ? "" : " $convertedOrderBy"}");
+//      subjectListMap = await db.query("subject",
+//          where: '"start_date" = ?', whereArgs: [startDate]);
     }
 
     //if there is no subject return empty list
