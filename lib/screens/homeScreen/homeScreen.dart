@@ -4,7 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 import 'package:todo/screens/homeScreen/bottomMenu.dart';
 import 'package:todo/screens/homeScreen/daysUI.dart';
-import 'package:todo/screens/homeScreen/todosCards.dart';
+import 'package:todo/screens/homeScreen/subjectCards.dart';
 import 'package:todo/screens/homeScreen/topRow.dart';
 import 'package:todo/state/addSubjectVM.dart';
 import 'package:todo/state/subjectVM.dart';
@@ -51,7 +51,11 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             TagChips(RM.get<SubjectVM>()),
             InfoAndFilterRow(blue: blue),
-            ToDosCards(),
+            SubjectCards(),
+            //Let the last subject card parts visible
+            Padding(
+              padding: EdgeInsets.only(bottom: 35),
+            )
           ],
         ),
       ),
@@ -64,7 +68,7 @@ class FAB extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
-  final Color sheetBGColor = UIColors.addSubjectSheetBGColor;
+  final Color sheetBGColor = UIColors.darkerPurple;
 
   @override
   Widget build(BuildContext context) {

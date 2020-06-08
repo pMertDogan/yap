@@ -8,8 +8,8 @@ import 'package:todo/data/models/subject.dart';
 import 'package:todo/state/subjectVM.dart';
 import 'package:todo/utility/colors.dart';
 
-class ToDosCards extends StatelessWidget {
-  const ToDosCards({
+class SubjectCards extends StatelessWidget {
+  const SubjectCards({
     Key key,
   }) : super(key: key);
 
@@ -38,21 +38,19 @@ class ToDosCards extends StatelessWidget {
             child: Container(
               child: ListView.separated(
                   //add space between subjects
-                  separatorBuilder: (context, index) => SizedBox(
-                        height: 8,
-                      ),
+                  separatorBuilder: (context, index) =>
+                      Padding(padding: EdgeInsets.all(3)),
                   physics: ScrollPhysics(),
                   shrinkWrap: true,
                   itemCount: subjectList.length,
                   itemBuilder: (context, index) {
                     Subject subject = subjectList[index];
-
                     return Container(
                       height: screenHeightPercent * 15,
-                      color: Colors.blueGrey,
+                      //color: UIColors.darkBlue,
                       child: Stack(
                         children: <Widget>[
-                          BackgroundCardWithSubjectTitle(subject: subject),
+                          CardContainer(subject: subject, index: index),
                           CountDown(subject: subject),
                           Tags(
                               screenWidthPercent: screenWidthPercent,
@@ -65,7 +63,6 @@ class ToDosCards extends StatelessWidget {
                         ],
                       ),
                     );
-                    return OldUI(subjectList: subjectList, index: index);
                   }),
             ),
           );
@@ -103,8 +100,8 @@ class ContributorsCircles extends StatelessWidget {
           itemCount: subject.contributors.length,
           itemBuilder: (context, index) {
             return CircleAvatar(
-              child: subject.contributors[index].photoLocal != null
-                  ? Image.file(File(subject.contributors[index].photoLocal))
+              child: subject.contributors[index].photoURL != null
+                  ? Image.file(File(subject.contributors[index].photoURL))
                   : FlutterLogo(),
             );
           },
@@ -153,13 +150,15 @@ class Tags extends StatelessWidget {
   }
 }
 
-class BackgroundCardWithSubjectTitle extends StatelessWidget {
-  const BackgroundCardWithSubjectTitle({
+class CardContainer extends StatelessWidget {
+  const CardContainer({
     Key key,
     @required this.subject,
+    @required this.index,
   }) : super(key: key);
 
   final Subject subject;
+  final int index;
 
   @override
   Widget build(BuildContext context) {
@@ -170,44 +169,50 @@ class BackgroundCardWithSubjectTitle extends StatelessWidget {
         widthFactor: 0.95,
         child: Row(
           children: <Widget>[
-            Container(
-              decoration: BoxDecoration(
-                  color: UIColors.addSubjectSheetTextColor,
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(8),
-                      topLeft: Radius.circular(8))),
-              child: Padding(
-                padding: const EdgeInsets.all(2.0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Icon(
-                      FlutterIcons.angle_up_faw5s,
-                      color: Colors.white,
-                      size: 15,
-                    ),
-                    Text(
-                      subject.priority.toString(),
-                      style: TextStyle(color: Colors.white, fontSize: 18),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            PriorityLegend(subject: subject),
             Expanded(
               child: Container(
-                alignment: Alignment.center,
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(16.0),
-                        topLeft: Radius.circular(16.0),
-                        topRight: Radius.circular(0.0),
-                        bottomRight: Radius.circular(16.0)),
-                    color: UIColors.addSubjectSheetLightColor),
-                child: Text(
-                  subject.title,
-                  style: TextStyle(color: Colors.white, fontSize: 28),
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(16.0),
+                      topLeft: Radius.circular(16.0),
+                      topRight: Radius.circular(0.0),
+                      bottomRight: Radius.circular(16.0)),
+                  color:
+                      index % 2 == 0 ? UIColors.purple : UIColors.darkerPurple,
+                ),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text(
+                          subject.title,
+                          style: TextStyle(color: Colors.white, fontSize: 28),
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: Container(
+                        padding: const EdgeInsets.all(8.0),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(16.0),
+                                topLeft: Radius.circular(0.0),
+                                topRight: Radius.circular(0.0),
+                                bottomRight: Radius.circular(0.0)),
+                            color: Colors.black54),
+                        //alignment: Alignment.topCenter,
+                        child: Icon(
+                          FontAwesome.star_o,
+                          //FontAwesome.star,
+                          size: 18,
+                          color: Colors.yellow,
+                        ),
+                      ),
+                    )
+                  ],
                 ),
               ),
             ),
@@ -218,28 +223,39 @@ class BackgroundCardWithSubjectTitle extends StatelessWidget {
   }
 }
 
-class OldUI extends StatelessWidget {
-  OldUI({
+class PriorityLegend extends StatelessWidget {
+  const PriorityLegend({
     Key key,
-    @required this.subjectList,
-    this.index,
+    @required this.subject,
   }) : super(key: key);
-  int index;
-  final List<Subject> subjectList;
+
+  final Subject subject;
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(subjectList[index].title),
-      subtitle: Text(
-          //subjectList[index].contributors.toString()),
-          subjectList[index].tags.toString() ?? "tags yok"),
-      //subtitle: Text(subjectList[index].explanation ?? ""),
-      leading: subjectList[index].picLocal != null
-          ? CircleAvatar(
-              backgroundImage: FileImage(File(subjectList[index].picLocal)),
-            )
-          : null,
+    return Container(
+      decoration: BoxDecoration(
+          color: UIColors.addSubjectSheetTextColor,
+          borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(8), topLeft: Radius.circular(8))),
+      child: Padding(
+        padding: const EdgeInsets.all(2.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Icon(
+              FlutterIcons.angle_up_faw5s,
+              color: Colors.white,
+              size: 15,
+            ),
+            Text(
+              subject.priority.toString(),
+              style: TextStyle(color: Colors.white, fontSize: 18),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

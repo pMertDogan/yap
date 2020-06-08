@@ -51,7 +51,7 @@ class AddNewToDoUI extends StatelessWidget {
             ),
             Container(
               decoration: BoxDecoration(
-                  color: UIColors.addSubjectSheetLightColor,
+                  color: UIColors.purple,
                   borderRadius: BorderRadius.only(
                       topRight: Radius.circular(8),
                       bottomRight: Radius.circular(8))),
@@ -106,7 +106,7 @@ class AddNewToDoUI extends StatelessWidget {
             ),
             Container(
               height: 125,
-              color: UIColors.addSubjectSheetLightColor,
+              color: UIColors.purple,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(

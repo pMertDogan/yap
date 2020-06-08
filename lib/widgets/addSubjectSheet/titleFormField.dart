@@ -14,7 +14,7 @@ class TitleFormField extends StatelessWidget {
       widthFactor: 0.8,
       child: Container(
         decoration: BoxDecoration(
-            color: UIColors.addSubjectSheetLightColor,
+            color: UIColors.purple,
             borderRadius: BorderRadius.circular(8)),
         padding: EdgeInsets.all(5),
         child: StateBuilder<AddSubjectVM>(

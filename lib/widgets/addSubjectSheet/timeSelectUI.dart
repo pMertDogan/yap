@@ -61,7 +61,7 @@ class _TimeLineSelectState extends State<TimeLineSelect> {
               children: <Widget>[
                 Icon(
                   FontAwesome5Solid.clock,
-                  color: UIColors.addSubjectSheetLightColor,
+                  color: UIColors.purple,
                   size: 35,
                 ),
                 const SizedBox(
@@ -97,7 +97,7 @@ class _TimeLineSelectState extends State<TimeLineSelect> {
               children: <Widget>[
                 Icon(
                   FontAwesome5Solid.clock,
-                  color: UIColors.addSubjectSheetLightColor,
+                  color: UIColors.purple,
                   size: 35,
                 ),
                 const SizedBox(

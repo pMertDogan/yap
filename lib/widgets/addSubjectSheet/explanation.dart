@@ -11,7 +11,7 @@ class ExplanationFromField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: UIColors.addSubjectSheetLightColor,
+        color: UIColors.purple,
         padding: EdgeInsets.all(5),
         child: TextFormField(
           onChanged: (input) =>

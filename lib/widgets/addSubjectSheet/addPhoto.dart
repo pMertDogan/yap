@@ -22,7 +22,7 @@ class _AddPhotoState extends State<AddPhoto> {
     return Container(
         height: 132,
         width: double.infinity,
-        color: UIColors.addSubjectSheetLightColor,
+        color: UIColors.purple,
         child: StateBuilder<AddSubjectVM>(
           tag: "photo",
           //watch: (s) => s.state.subject.picLocal,

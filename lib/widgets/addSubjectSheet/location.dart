@@ -47,7 +47,7 @@ class _LocationState extends State<Location> {
                       Icon(
                         Icons.edit_location,
                         size: 48,
-                        color: UIColors.addSubjectSheetLightColor,
+                        color: UIColors.purple,
                       ),
                       Text(
                         "Add location",
