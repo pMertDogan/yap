@@ -33,7 +33,8 @@ class ToDosCards extends StatelessWidget {
           double screenWidthPercent = MediaQuery.of(context).size.width / 100;
           return AnimatedOpacity(
             opacity: subjectVMRM.isWaiting ? 0 : 1,
-            duration: Duration(milliseconds: 200),
+            duration: Duration(milliseconds: 500),
+            curve: Curves.easeIn,
             child: Container(
               child: ListView.separated(
                   //add space between subjects
@@ -57,28 +58,10 @@ class ToDosCards extends StatelessWidget {
                               screenWidthPercent: screenWidthPercent,
                               screenHeightPercent: screenHeightPercent,
                               subject: subject),
-                          Positioned(
-                            height: screenHeightPercent * 20 * 0.2,
-                            width: 150,
-                            bottom: 0,
-                            right: screenWidthPercent * 5,
-                            child: Container(
-                              child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: subject.contributors.length,
-                                itemBuilder: (context, index) {
-                                  return CircleAvatar(
-                                    child: subject.contributors[index]
-                                                .photoLocal !=
-                                            null
-                                        ? Image.file(File(subject
-                                            .contributors[index].photoLocal))
-                                        : FlutterLogo(),
-                                  );
-                                },
-                              ),
-                            ),
-                          )
+                          ContributorsCircles(
+                              screenHeightPercent: screenHeightPercent,
+                              screenWidthPercent: screenWidthPercent,
+                              subject: subject)
                         ],
                       ),
                     );
@@ -88,6 +71,45 @@ class ToDosCards extends StatelessWidget {
           );
         }
       },
+    );
+  }
+}
+
+class ContributorsCircles extends StatelessWidget {
+  const ContributorsCircles({
+    Key key,
+    @required this.screenHeightPercent,
+    @required this.screenWidthPercent,
+    @required this.subject,
+  }) : super(key: key);
+
+  final double screenHeightPercent;
+  final double screenWidthPercent;
+  final Subject subject;
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      height: screenHeightPercent * 20 * 0.2,
+      width: screenWidthPercent * 35,
+      bottom: 0,
+      right: screenWidthPercent * 5,
+      child: Container(
+        //color: Colors.red,
+        alignment: Alignment.centerRight,
+        child: ListView.builder(
+          shrinkWrap: true,
+          scrollDirection: Axis.horizontal,
+          itemCount: subject.contributors.length,
+          itemBuilder: (context, index) {
+            return CircleAvatar(
+              child: subject.contributors[index].photoLocal != null
+                  ? Image.file(File(subject.contributors[index].photoLocal))
+                  : FlutterLogo(),
+            );
+          },
+        ),
+      ),
     );
   }
 }
@@ -108,7 +130,7 @@ class Tags extends StatelessWidget {
   Widget build(BuildContext context) {
     return Positioned(
       height: screenHeightPercent * 20 * 0.2,
-      width: 150,
+      width: screenWidthPercent * 40,
       bottom: 0,
       left: screenWidthPercent * 12,
       child: Container(
