@@ -17,7 +17,7 @@ class Subject {
       endTime,
       locationName;
 
-  bool completed; //= false;
+  bool completed, favorite; //= false = 0;
 
   //Custom fields - from other Tables
   Set<String> tags;
@@ -36,7 +36,8 @@ class Subject {
     this.endDate,
     this.startTime,
     this.endTime,
-    this.completed,
+    completed,
+    favorite,
     this.locationName,
     int priority,
     List<Friend> contributors,
@@ -48,7 +49,9 @@ class Subject {
         this.priority = priority ?? 0,
         this.toDoList = <ToDo>[ToDo(title: "")],
         this.tags = tags ?? <String>{},
-        this.contributors = contributors ?? <Friend>[];
+        this.contributors = contributors ?? <Friend>[],
+        this.completed = completed ?? false,
+        this.favorite = favorite ?? false;
 
   @override
   String toString() {
@@ -64,6 +67,7 @@ class Subject {
         Jiffy(this.startDate, "dd/MM/yyyy").format("yyyy-MM-dd");
     String convertedStartTime =
         Jiffy(this.startTime, "HH:mm:ss").format("HH:mm:ss");
+        //Why?
     String convertedEndDate, convertedEndTime;
     if (this.endTime != null) {
       convertedEndDate = Jiffy(this.endDate, "dd/MM/yyyy").format("yyyy-MM-dd");
@@ -83,8 +87,10 @@ class Subject {
       "location_name": this.locationName,
       "priority": this.priority,
       "lat": this.latLngList.isEmpty ? null : latLngList[0].toString(),
-      "lng": this.latLngList.isEmpty ? null : latLngList[1].toString()
-      //"completed": this.completed ? 1 : 0, // True => 1 False => 0
+      "lng": this.latLngList.isEmpty ? null : latLngList[1].toString(),
+      // True => 1 False => 0
+      "completed": this.completed == null ? 0 : this.completed ? 1 : 0,
+      "favorite": this.favorite == null ? 0 : this.favorite ? 1 : 0,
     };
   }
 
@@ -114,6 +120,7 @@ class Subject {
       endTime: map['end_time'] as String,
       locationName: map['location_name'] as String,
       completed: map['completed'] == 0 ? false : true,
+      favorite: map['favorite'] == 0 ? false : true,
       toDoList: map['toDoList'] as List<ToDo>,
       listOfAlarms: map['listOfAlarms'] as List<Alarms>,
       contributors: map['contributors'] as List<Friend>,

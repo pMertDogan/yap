@@ -47,6 +47,12 @@ class SubjectVM implements SubjectBase {
     listOfSubjects[indexToReplace] = updatedSubject;
   }
 
+  Future<void> updateFavoriteStatus(Subject subject) async {
+    await databaseHelper.updateFavoriteStatus(subject.id, subject.favorite);
+    //await getInitDatas();
+    await getSelectedDayData(filterByTags: true);
+  }
+
   Future<void> getInitDatas() async {
     //Is it for all or only for specific start_date?
     listOfAllSubjects =
@@ -61,8 +67,8 @@ class SubjectVM implements SubjectBase {
       listOfSubjectsStartDates = value[0];
       return listOfTotalSubjectCountForEachDay = value[1];
     });
-    print("SUBJECTVM getAll subjects length: " +
-        listOfSubjects.length.toString());
+//    print("SUBJECTVM getInitDates subjects length: " +
+//        listOfSubjects.length.toString());
   }
 
   Future<void> getSelectedDayData({bool filterByTags = false}) async {
@@ -81,8 +87,8 @@ class SubjectVM implements SubjectBase {
             startDate: listOfSubjectsStartDates[selectedStartDayIndex - 1],
             tags: selectedTags); //?? <Subject>[];
       }
-      print("subjectVM deki subject uzunluğu " +
-          listOfSubjects.length.toString());
+//      print("subjectVM  selectedDay subject uzunluğu " +
+//          listOfSubjects.length.toString());
     }
     //just get subjects by start_date
     else {

@@ -31,14 +31,14 @@ class AddSubjectVM {
 
   AddSubjectVM() {
     RM.get<SubjectVM>().listenToRM((subjectVM) {
-      print("addSubjectVM updated tags : " + subjectVM.state.tags.toString());
+     // print("addSubjectVM updated tags : " + subjectVM.state.tags.toString());
       tags = subjectVM.state.allTags ?? <String>{};
     });
 
     RM.get<UserVM>().listenToRM((rm) {
       if (rm.state.user != null) {
-        print("AddSUBJECTVM updated friends : " +
-            rm.state.user.friends.toString());
+        //print("AddSUBJECTVM updated friends : " +
+        //    rm.state.user.friends.toString());
         friendList = rm.state.user.friends;
         selectedFriendList = rm.state.user.friends.isEmpty
             ? <bool>[]

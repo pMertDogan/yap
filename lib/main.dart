@@ -5,6 +5,7 @@ import 'package:todo/data/dbHelper.dart';
 import 'package:todo/data/services/fakeAuthService.dart';
 import 'package:todo/screens/homeScreen/homeScreen.dart';
 import 'package:todo/screens/loginScreen/loginScreen.dart';
+import 'package:todo/state/detailVM.dart';
 import 'package:todo/state/subjectVM.dart';
 import 'package:todo/state/userVM.dart';
 import 'package:todo/widgets/themeData.dart';
@@ -20,6 +21,7 @@ void main() {
           Inject<UserVM>(
               () => UserVM(FakeAuthService(), IN.get<DatabaseHelper>())),
           Inject<SubjectVM>(() => SubjectVM(IN.get<DatabaseHelper>())),
+          Inject<DetailVM>(() => DetailVM())
         ],
         builder: (context) => MyApp(),
       ),

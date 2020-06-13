@@ -29,7 +29,8 @@ CREATE TABLE subject (
     completed     BOOLEAN      DEFAULT (0),
     lat           TEXT,
     lng           TEXT,
-    location_name TEXT
+    location_name TEXT,
+    favorite      BOOLEAN      DEFAULT (0)
 );
 
       ''';

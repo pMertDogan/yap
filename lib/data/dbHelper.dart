@@ -23,7 +23,7 @@ class DatabaseHelper {
         // Set the path to the database. Note: Using the `join` function from the
         // `path` package is best practice to ensure the path is correctly
         // constructed for each platform.
-        join(await getDatabasesPath(), 'yap_database_m.db'),
+        join(await getDatabasesPath(), 'yap_database_p4.db'),
         version: 1,
         //enable cascade delete
         onConfigure: (db) async => await db.execute(SQLTables.pragmaForeingKey),
@@ -189,14 +189,10 @@ class DatabaseHelper {
       //get all subjects
       String sqlQery = 'SELECT * FROM subject s ${convertedOrderBy ?? ""} ';
       subjectListMap = await db.rawQuery(sqlQery);
-      //subjectListMap = await db.query("subject");
       //TODO add orderBY
-      print("buraaa 1**************************");
-      print(sqlQery);
     }
     //
     else if (tags != null) {
-      print("buraaa 2 ");
       String sql = '''
             SELECT s.id,
                    s.user_id,
@@ -212,7 +208,8 @@ class DatabaseHelper {
                    s.completed,
                    s.lat,
                    s.lng,
-                   s.location_name  FROM subject s
+                   s.location_name,
+                   s.favorite FROM subject s
                    LEFT OUTER JOIN
                    subject_tags st ON st.subject_id = s.id
                    LEFT OUTER JOIN
@@ -232,14 +229,11 @@ class DatabaseHelper {
       sql += ' GROUP BY s.id';
       sql += orderBy == null ? "" : " $convertedOrderBy";
 
-      print("sql query" + sql);
       subjectListMap = await db.rawQuery(sql);
     } else if (startDate != null) {
       subjectListMap = await db
           .rawQuery("Select * FROM subject s WHERE start_date = '$startDate' "
               "${orderBy == null ? "" : " $convertedOrderBy"}");
-//      subjectListMap = await db.query("subject",
-//          where: '"start_date" = ?', whereArgs: [startDate]);
     }
 
     //if there is no subject return empty list
@@ -264,6 +258,7 @@ class DatabaseHelper {
       listOfSubjects.add(subject);
     });
     print("DBHelper number of subjects : " + listOfSubjects.length.toString());
+
     return listOfSubjects;
   }
 
@@ -294,6 +289,14 @@ class DatabaseHelper {
       totalSubjectForEachStartDate
     ];
     return resultList;
+  }
+
+  Future<void> updateFavoriteStatus(int subjectID, bool favoriteStatus) async {
+    //1 0 => true false
+    Map<String, int> updatedFavorite = {"favorite": favoriteStatus ? 0 : 1};
+    Database db = await database;
+    await db.update("subject", updatedFavorite,
+        where: '"id" = ?', whereArgs: [subjectID]);
   }
 
 //TAGS
