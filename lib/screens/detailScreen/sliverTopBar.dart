@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:todo/data/models/subject.dart';
-import 'package:todo/screens/detailScreen/detailScreen.dart';
+import 'package:todo/screens/detailScreen/countDownAndTags.dart';
 import 'package:todo/utility/colors.dart';
 
 class SliverTopBar extends StatelessWidget {
