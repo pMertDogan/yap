@@ -1,17 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:todo/widgets/addSubjectSheet/addNewSubjectButton.dart';
-import 'package:todo/widgets/addSubjectSheet/yeniToDoUI.dart';
-
-import 'package:todo/widgets/addSubjectSheet/tagsAddOrSelect.dart';
 import 'package:todo/widgets/addSubjectSheet/addPhoto.dart';
 import 'package:todo/widgets/addSubjectSheet/contributors.dart';
 import 'package:todo/widgets/addSubjectSheet/explanation.dart';
 import 'package:todo/widgets/addSubjectSheet/location.dart';
 import 'package:todo/widgets/addSubjectSheet/prioritySlider.dart';
+import 'package:todo/widgets/addSubjectSheet/tagsAddOrSelect.dart';
 import 'package:todo/widgets/addSubjectSheet/timeSelectUI.dart';
 import 'package:todo/widgets/addSubjectSheet/titleFormField.dart';
 import 'package:todo/widgets/addSubjectSheet/titleText.dart';
+import 'package:todo/widgets/addSubjectSheet/yeniToDoUI.dart';
+import 'package:todo/widgets/keyboardPadding.dart';
 
 class AddSubjectSheet extends StatelessWidget {
   const AddSubjectSheet({
@@ -79,20 +79,6 @@ class AddSubjectSheet extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class KeyboardPadding extends StatelessWidget {
-  const KeyboardPadding({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding:
-          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
     );
   }
 }

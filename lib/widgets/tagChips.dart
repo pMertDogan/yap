@@ -36,6 +36,7 @@ class _TagChipsState extends State<TagChips> {
             : Container(
                 height: 40,
                 child: ListView.builder(
+                  
                   //Enable reserve? if there is too many old tag user cant see newly added tag
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,

@@ -2,9 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:states_rebuilder/states_rebuilder.dart';
 import 'package:todo/data/models/subject.dart';
 import 'package:todo/screens/detailScreen/countDownAndTags.dart';
+import 'package:todo/state/detailVM.dart';
 import 'package:todo/utility/colors.dart';
+import 'package:todo/widgets/orangeLoadingIndicator.dart';
 
 class SliverTopBar extends StatelessWidget {
   const SliverTopBar(
@@ -17,22 +20,14 @@ class SliverTopBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverAppBar(
       iconTheme: IconThemeData(color: Colors.white),
-      //actionsIconTheme: IconThemeData(color: Colors.white),
       actions: <Widget>[
         InkWell(
-          onTap: () {},
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.black54,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(8),
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Icon(FlutterIcons.star_faw, color: Colors.yellow),
-            ),
-          ),
+          onTap: () async {
+            RM
+                .get<DetailVM>()
+                .setState((s) async => await s.updateFavoriteStatus());
+          },
+          child: TopBar(),
         )
       ],
       pinned: true,
@@ -41,26 +36,74 @@ class SliverTopBar extends StatelessWidget {
       flexibleSpace: FlexibleSpaceBar(
         centerTitle: true,
         titlePadding: EdgeInsets.zero,
-        title: SizedBox(
-          height: 150,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40),
-                child: Text(subject.title ?? "",
-                    //maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(color: Colors.white)),
-              ),
-            ],
-          ),
-        ),
+        title: TopTitleText(subject: subject),
         background: Stack(
           children: <Widget>[
             BackgroundImage(subject: subject),
-            CountdownAndTags(subject: subject),
+            CountdownAndTagsRow(subject: subject),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class TopTitleText extends StatelessWidget {
+  const TopTitleText({
+    Key key,
+    @required this.subject,
+  }) : super(key: key);
+
+  final Subject subject;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 150,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 40),
+            child: Text(subject.title ?? "",
+                //maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class TopBar extends StatelessWidget {
+  const TopBar({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.black54,
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(8),
+        ),
+      ),
+      child: WhenRebuilderOr<DetailVM>(
+        observe: () => RM.get<DetailVM>(),
+        onWaiting: () => Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: FittedBox(child: OrangeLoadingIndicator()),
+        ),
+        watch: (model) => model.state.subject.favorite,
+        builder: (context, model) => Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Icon(
+              model.state.subject.favorite
+                  ? FontAwesome.star
+                  : FontAwesome.star_o,
+              color: Colors.yellow),
         ),
       ),
     );
@@ -77,8 +120,9 @@ class BackgroundImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("subject id " + subject.id.toString());
     return Hero(
-      tag: subject.id,
+      tag: subject.id.toString(),
       child: Container(
         height: 180,
         width: MediaQuery.of(context).size.width,

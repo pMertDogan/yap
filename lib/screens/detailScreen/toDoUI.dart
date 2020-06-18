@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:states_rebuilder/states_rebuilder.dart';
 import 'package:todo/data/models/subject.dart';
 import 'package:todo/data/models/todo.dart';
+import 'package:todo/state/detailVM.dart';
 import 'package:todo/utility/colors.dart';
 
 class ToDoUI extends StatelessWidget {
@@ -29,15 +31,17 @@ class ToDoUI extends StatelessWidget {
             child: Container(
               margin: EdgeInsets.all(2),
               decoration: BoxDecoration(
-                  color: index % 2 == 0
-                      ? UIColors.purple
-                      : UIColors.darkerPurple,
-                  borderRadius:
-                      BorderRadius.all(Radius.circular(8))),
+                  color:
+                      index % 2 == 0 ? UIColors.purple : UIColors.darkerPurple,
+                  borderRadius: BorderRadius.all(Radius.circular(8))),
               child: ExpansionTile(
                 leading: Checkbox(
-                    value: true,
-                    onChanged: (a) {},
+                    value: subject.toDoList[index].completed,
+                    onChanged: (completed) {
+                      RM
+                          .get<DetailVM>()
+                          .setState((s) => s.updateToDoStatus(index));
+                    },
                     activeColor: Colors.black45),
                 initiallyExpanded: index == 0,
                 title: Text(
@@ -45,12 +49,10 @@ class ToDoUI extends StatelessWidget {
                   style: TextStyle(color: Colors.white),
                 ),
                 children: <Widget>[
-                  Text(todo.explanation ??
-                      "There is no explanation")
+                  Text(todo.explanation ?? "There is no explanation")
                 ],
-                backgroundColor: index % 2 == 0
-                    ? UIColors.purple
-                    : UIColors.darkerPurple,
+                backgroundColor:
+                    index % 2 == 0 ? UIColors.purple : UIColors.darkerPurple,
               ),
             ),
           );

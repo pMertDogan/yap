@@ -1,5 +1,6 @@
 import 'package:todo/data/base/subjectBase.dart';
 import 'package:todo/data/dbHelper.dart';
+import 'package:todo/data/models/friend.dart';
 import 'package:todo/data/models/subject.dart';
 
 class SubjectVM implements SubjectBase {
@@ -49,7 +50,23 @@ class SubjectVM implements SubjectBase {
 
   Future<void> updateFavoriteStatus(Subject subject) async {
     await databaseHelper.updateFavoriteStatus(subject.id, subject.favorite);
-    //await getInitDatas();
+    await getSelectedDayData(filterByTags: true);
+  }
+
+  Future<void> updateSubjectContributors(
+      List<Friend> updatedContributors,int subjecID) async {
+    await databaseHelper.updateSubjectContributors(updatedContributors,subjecID);
+    await getSelectedDayData(filterByTags: true);
+  }
+
+  Future<void> updateSubjectTags(int subjectID, Set<String> subjectTags) async {
+    await databaseHelper.updateSubjectTags(subjectID, subjectTags);
+    await databaseHelper.removeUnusedTags();
+    await getSelectedDayData(filterByTags: true);
+  }
+
+  Future<void> updateToDoStatus(int todoID, bool status) async {
+    await databaseHelper.updateToDoStatus(todoID, status);
     await getSelectedDayData(filterByTags: true);
   }
 

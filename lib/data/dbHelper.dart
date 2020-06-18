@@ -300,11 +300,39 @@ class DatabaseHelper {
   }
 
 //TAGS
+
+  Future<void> updateSubjectTags(int subjectID, Set<String> subjectTags) async {
+    database.then((db) {
+      db.transaction((txn) async {
+        //first delete current tags
+        await txn.delete("subject_tags",
+            where: '"subject_id"= ?', whereArgs: [subjectID]);
+        //Than add all tags to table
+        await Future.forEach(subjectTags, (tag) async {
+          List<Map<String, dynamic>> result;
+          result =
+              await txn.query("tags", where: '"name" = ?', whereArgs: [tag]);
+          int id;
+          //if there is no tag using this name
+          if (result.isEmpty) {
+            //insert tag to table
+            id = await txn.insert("tags", {"name": tag});
+          } else {
+            //tags exists use 0. item id
+            id = result[0]["id"];
+          }
+          await txn
+              .insert("subject_tags", {"subject_id": subjectID, "tag_id": id});
+        });
+      });
+    });
+  }
+
   Future<void> removeUnusedTags() async {
-    //Karşılığı olmayan todoları sil
+    //remove unused tags
     final Database db = await database;
     await db.execute(
-        "DELETE FROM todos WHERE id NOT IN (SELECT f.todo_id FROM subject_todos f)");
+        "DELETE FROM tags WHERE id NOT IN (SELECT tag_id FROM subject_tags);");
   }
 
   Future<Set<String>> getAllTags() async {
@@ -341,6 +369,13 @@ class DatabaseHelper {
     return todosList;
   }
 
+  Future<void> updateToDoStatus(int todoID, bool status) async {
+    database.then((db) {
+      return db.update("todos", {"completed": status ? 0 : 1},
+          where: '"id"= ?', whereArgs: [todoID]);
+    });
+  }
+
 // Contributors aka Friends
   Future<List<Friend>> getContributorsByID(int subjectID) async {
     final Database db = await database;
@@ -361,6 +396,23 @@ class DatabaseHelper {
     //print("lenght of contributors " + contributorsListMap.length.toString());
     return List.generate(contributorsListMap.length,
         (index) => Friend.fromMap(contributorsListMap[index]));
+  }
+
+  Future<void> updateSubjectContributors(
+      List<Friend> updatedContributors, int subjecID) async {
+    database.then((db) {
+      db.transaction((txn) async {
+        //remove olds
+        await txn.delete("subject_contributors",
+            where: '"subject_id" = ?', whereArgs: [subjecID]);
+        //add news
+        await Future.forEach(
+            updatedContributors,
+            (Friend contributors) async => await txn.insert(
+                "subject_contributors",
+                {"subject_id": subjecID, "friend_id": contributors.id}));
+      });
+    });
   }
 
   Future<void> addFriend(Friend friend) async {

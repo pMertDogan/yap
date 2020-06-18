@@ -67,7 +67,7 @@ class Subject {
         Jiffy(this.startDate, "dd/MM/yyyy").format("yyyy-MM-dd");
     String convertedStartTime =
         Jiffy(this.startTime, "HH:mm:ss").format("HH:mm:ss");
-        //Why?
+    //Why?
     String convertedEndDate, convertedEndTime;
     if (this.endTime != null) {
       convertedEndDate = Jiffy(this.endDate, "dd/MM/yyyy").format("yyyy-MM-dd");
@@ -107,6 +107,7 @@ class Subject {
   }
 
   factory Subject.fromMap(Map<String, dynamic> map) {
+    //print("isEmpty " + map["lat"] as String);
     return new Subject(
       id: map['id'] as int,
       priority: map['priority'] as int,
@@ -126,8 +127,8 @@ class Subject {
       contributors: map['contributors'] as List<Friend>,
       tags: map['tags'] as Set<String>,
       latLng: <double>[
-        double.tryParse(map["lat"] ?? ""), //to avoid null .lenght error
-        double.tryParse(map["lng"] ?? "")
+        double.tryParse(map["lat"]??""), //to avoid null .lenght error
+        double.tryParse(map["lng"]??"")
       ],
     );
   }

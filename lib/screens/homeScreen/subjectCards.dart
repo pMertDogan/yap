@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -23,7 +24,7 @@ class SubjectCards extends StatelessWidget {
       child: ThereIsNoTodosText(),
       builderWithChild: (context, subjectVMRM, child) {
         List<Subject> subjectList = subjectVMRM.state.listOfSubjects;
-        
+
         if (subjectList.isEmpty) {
           return child;
         } else {
@@ -193,10 +194,11 @@ class CardContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     double completePercentOfSubject = 0;
     //calc percent
-    subject.toDoList.forEach((element) => element.completed
-        ? completePercentOfSubject = 1 / subject.toDoList.length
-        : null);
-
+    subject.toDoList.forEach((element) {
+      if (element.completed) {
+        completePercentOfSubject += (1 / subject.toDoList.length);
+      }
+    });
     return Align(
       alignment: Alignment.center,
       child: FractionallySizedBox(
@@ -208,7 +210,7 @@ class CardContainer extends StatelessWidget {
             Expanded(
               //Background Card
               child: Hero(
-                tag: subject.id,
+                tag: subject.id.toString(),
                 //add material to avoid hero error
                 child: Material(
                   //to fix background color
@@ -237,7 +239,8 @@ class CardContainer extends StatelessWidget {
                     child: Row(
                       children: <Widget>[
                         //Card middle with Text
-                        PercentUI(completePercentOfSubject: completePercentOfSubject),
+                        PercentUI(
+                            completePercentOfSubject: completePercentOfSubject),
                         //Subject Title
                         CenterTitleUI(subject: subject),
                         //Favorite icon
@@ -277,13 +280,11 @@ class FavoriteUI extends StatelessWidget {
                 bottomRight: Radius.circular(0.0)),
             color: Colors.black54),
         child: InkWell(
-          onTap: () async => RM.get<SubjectVM>().setState(
-              (s) async =>
-                  await s.updateFavoriteStatus(subject)),
+          onTap: () async => RM
+              .get<SubjectVM>()
+              .setState((s) async => await s.updateFavoriteStatus(subject)),
           child: Icon(
-            subject.favorite
-                ? FontAwesome.star
-                : FontAwesome.star_o,
+            subject.favorite ? FontAwesome.star : FontAwesome.star_o,
             size: 18,
             color: Colors.yellow,
           ),
@@ -307,8 +308,7 @@ class CenterTitleUI extends StatelessWidget {
       child: Container(
         alignment: Alignment.center,
         child: Text(subject.title,
-            style: TextStyle(
-                color: Colors.white, fontSize: 28),
+            style: TextStyle(color: Colors.white, fontSize: 28),
             overflow: TextOverflow.ellipsis,
             maxLines: 1),
       ),
@@ -332,10 +332,8 @@ class PercentUI extends StatelessWidget {
         radius: 45.0,
         lineWidth: 2.0,
         percent: completePercentOfSubject,
-        center: Text((completePercentOfSubject.toInt() * 10)
-                .toString() +
-            "%"),
-        //backgroundColor: Colors.transparent,
+        center: Text(
+            ((completePercentOfSubject * 100).truncate()).toString() + "%"),
         progressColor: Colors.green,
       ),
     );
