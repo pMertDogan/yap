@@ -23,7 +23,7 @@ class DatabaseHelper {
         // Set the path to the database. Note: Using the `join` function from the
         // `path` package is best practice to ensure the path is correctly
         // constructed for each platform.
-        join(await getDatabasesPath(), 'yap_database_p4.db'),
+        join(await getDatabasesPath(), 'yap_database_p6.db'),
         version: 1,
         //enable cascade delete
         onConfigure: (db) async => await db.execute(SQLTables.pragmaForeingKey),
@@ -299,6 +299,12 @@ class DatabaseHelper {
         where: '"id" = ?', whereArgs: [subjectID]);
   }
 
+  Future<void> deleteSubjectByID(int subjectID) {
+    //TODO check
+    database.then((db) async {
+      await db.delete("subject", where: '"id" = ?', whereArgs: [subjectID]);
+    });
+  }
 //TAGS
 
   Future<void> updateSubjectTags(int subjectID, Set<String> subjectTags) async {
@@ -373,6 +379,23 @@ class DatabaseHelper {
     database.then((db) {
       return db.update("todos", {"completed": status ? 0 : 1},
           where: '"id"= ?', whereArgs: [todoID]);
+    });
+  }
+
+  Future<int> addToDoToSubject(ToDo toDo, int subjectId) async {
+    if (toDo.id == null) {
+      print("be carefull! there is no TODO ıd provieded");
+    }
+    //add subject_id field to todo.tomap for query
+    Map<String, dynamic> fixedQueryMap = toDo.toMap()
+      ..["subject_id"] = subjectId;
+    Database db = await database;
+    return await db.insert("todos", fixedQueryMap);
+  }
+
+  Future<void> deleteToDoById(int todoID) {
+    database.then((db) async {
+      await db.delete("todos", where: '"id"=?', whereArgs: [todoID]);
     });
   }
 

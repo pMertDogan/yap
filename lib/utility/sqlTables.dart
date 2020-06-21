@@ -69,7 +69,10 @@ CREATE TABLE todos (
                              NOT NULL,
     title       TEXT (1, 45) NOT NULL,
     explanation TEXT (1),
-    completed   BOOLEAN      DEFAULT (0) 
+    completed   BOOLEAN      DEFAULT (0),
+    user_id     INTEGER      NOT NULL,
+    change_date TEXT         NOT NULL,
+    change_info TEXT         NOT NULL
 );
 ''';
 

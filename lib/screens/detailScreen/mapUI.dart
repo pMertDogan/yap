@@ -20,12 +20,15 @@ class MapUI extends StatelessWidget {
           ? Container()
           : Column(
               children: <Widget>[
-                Text(
-                  subject.locationName,
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline3
-                      .copyWith(fontSize: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                  child: Text(
+                    subject.locationName,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline3
+                        .copyWith(fontSize: 20),
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),

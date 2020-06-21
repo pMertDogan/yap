@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 import 'package:todo/data/models/todo.dart';
+import 'package:todo/data/models/user.dart';
 import 'package:todo/state/addSubjectVM.dart';
+import 'package:todo/state/userVM.dart';
 import 'package:todo/utility/colors.dart';
 
 //Dirty code start :)
@@ -160,7 +162,15 @@ class AddNewToDoUI extends StatelessWidget {
                   builder: (context, titleString) => FlatButton(
                     onPressed: titleString.state.length > 3
                         ? () => addSubjectVMRM.setState((s) {
-                              s.subject.toDoList.add(ToDo(title: ""));
+                              User user = RM.get<UserVM>().state.user;
+                              s.subject.toDoList.add(
+                                ToDo(
+                                  title: "",
+                                  userID: user.id,
+                                  changeInfo: "Added by ${user.name} ",
+                                  changeDate: DateTime.now(),
+                                ),
+                              );
                               rmKeyTitle.state = _toDoList[toDoIndex + 1].title;
                               s.toDoIndex = ++toDoIndex;
                             }, filterTags: ["ToDo"])

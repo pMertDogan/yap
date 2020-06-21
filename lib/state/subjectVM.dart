@@ -2,6 +2,7 @@ import 'package:todo/data/base/subjectBase.dart';
 import 'package:todo/data/dbHelper.dart';
 import 'package:todo/data/models/friend.dart';
 import 'package:todo/data/models/subject.dart';
+import 'package:todo/data/models/todo.dart';
 
 class SubjectVM implements SubjectBase {
   Set<String> allTags = <String>{};
@@ -36,11 +37,12 @@ class SubjectVM implements SubjectBase {
   }
 
   @override
-  Future<void> deleteSubjectByIndex(int index) {
+  Future<void> deleteSubjectByID(int subjectID) {
+    //databaseHelper.
     //Check index is acceptable
-    if (index >= 0 && index <= listOfSubjects.length - 1) {
-      listOfSubjects.removeAt(index);
-    }
+//    if (index >= 0 && index <= listOfSubjects.length - 1) {
+//      listOfSubjects.removeAt(index);
+//    }
   }
 
   @override
@@ -54,8 +56,9 @@ class SubjectVM implements SubjectBase {
   }
 
   Future<void> updateSubjectContributors(
-      List<Friend> updatedContributors,int subjecID) async {
-    await databaseHelper.updateSubjectContributors(updatedContributors,subjecID);
+      List<Friend> updatedContributors, int subjecID) async {
+    await databaseHelper.updateSubjectContributors(
+        updatedContributors, subjecID);
     await getSelectedDayData(filterByTags: true);
   }
 
@@ -68,6 +71,14 @@ class SubjectVM implements SubjectBase {
   Future<void> updateToDoStatus(int todoID, bool status) async {
     await databaseHelper.updateToDoStatus(todoID, status);
     await getSelectedDayData(filterByTags: true);
+  }
+
+  Future<int> addToDoToSubject(ToDo toDo, int subjectId) async {
+    int id = await databaseHelper.addToDoToSubject(toDo, subjectId);
+    await getSelectedDayData(filterByTags: true);
+    print("todo ıd " + id.toString());
+    //return id to fix newly crated toDo (without ıd field) id on DetailVM
+    return id;
   }
 
   Future<void> getInitDatas() async {
@@ -117,5 +128,10 @@ class SubjectVM implements SubjectBase {
           listOfSubjects, (Subject element) => tags.addAll(element.tags));
       tagChipsSelect = List.generate(tags.length, (index) => index).toSet();
     }
+  }
+
+  Future<void> deleteToDoById(int todoID) async {
+    await databaseHelper.deleteToDoById(todoID);
+    await getSelectedDayData(filterByTags: true);
   }
 }

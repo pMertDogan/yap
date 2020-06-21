@@ -5,13 +5,11 @@ import 'package:flutter_mapbox_autocomplete/flutter_mapbox_autocomplete.dart';
 import 'package:latlong/latlong.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 import 'package:todo/state/addSubjectVM.dart';
+import 'package:todo/utility/apiKeys.dart';
 import 'package:todo/utility/colors.dart';
 
 LatLng _selectedLocation;
 final ReactiveModel<AddSubjectVM> addSubjectVMRM = RM.get<AddSubjectVM>();
-//Do not share it with git
-const String _mapBoxToken =
-    "pk.eyJ1IjoiNzYzIiwiYSI6ImNrOTFwbnhsejAwNXQzbW95cmQ0d2FhODcifQ.xY0bazHg-e1aiLzS3jqJ6w";
 
 final MapController _mapController = MapController();
 
@@ -107,7 +105,7 @@ class _LocationState extends State<Location> {
     showDialog(
       context: context,
       child: MapBoxAutoCompleteWidget(
-        apiKey: _mapBoxToken,
+        apiKey: ApiKeys.mapBoxToken,
         hint: "Select starting point",
         onSelect: (place) {
           double lat = place.geometry.coordinates[1],

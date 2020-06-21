@@ -1,7 +1,9 @@
 import 'package:jiffy/jiffy.dart';
+import 'package:states_rebuilder/states_rebuilder.dart';
 import 'package:todo/data/models/alarms.dart';
 import 'package:todo/data/models/friend.dart';
 import 'package:todo/data/models/todo.dart';
+import 'package:todo/state/userVM.dart';
 
 class Subject {
   //SQL only support primitive data types => Shrink to tables
@@ -47,7 +49,14 @@ class Subject {
     this.listOfAlarms,
   })  : this.latLngList = latLng ?? <double>[],
         this.priority = priority ?? 0,
-        this.toDoList = <ToDo>[ToDo(title: "")],
+        this.toDoList = <ToDo>[
+          ToDo(
+            title: "",
+            userID: RM.get<UserVM>().state.user.id,
+            changeInfo: "Added by ${RM.get<UserVM>().state.user.name} ",
+            changeDate: DateTime.now(),
+          )
+        ],
         this.tags = tags ?? <String>{},
         this.contributors = contributors ?? <Friend>[],
         this.completed = completed ?? false,
@@ -127,8 +136,8 @@ class Subject {
       contributors: map['contributors'] as List<Friend>,
       tags: map['tags'] as Set<String>,
       latLng: <double>[
-        double.tryParse(map["lat"]??""), //to avoid null .lenght error
-        double.tryParse(map["lng"]??"")
+        double.tryParse(map["lat"] ?? ""), //to avoid null .lenght error
+        double.tryParse(map["lng"] ?? "")
       ],
     );
   }

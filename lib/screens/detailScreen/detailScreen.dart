@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 import 'package:todo/data/models/subject.dart';
+import 'package:todo/screens/detailScreen/addTodoButton.dart';
 import 'package:todo/screens/detailScreen/contributorsUI.dart';
 import 'package:todo/screens/detailScreen/explanationUI.dart';
 import 'package:todo/screens/detailScreen/mapUI.dart';
@@ -28,36 +28,12 @@ class DetailScreen extends StatelessWidget {
                   ExplanationUI(subject: subject),
                   MiddleButtons(),
                   MapUI(subject: subject),
-                  ToDoUI(subject: subject),
-                  AddButon(),
+                  AddTodoButon(),
+                  ToDoUI(),
                 ],
               );
             }),
       ),
     );
-  }
-}
-
-class AddButon extends StatelessWidget {
-  const AddButon({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SliverToBoxAdapter(
-        child: FractionallySizedBox(
-          widthFactor: 0.5,child: FlatButton.icon(
-             shape: StadiumBorder(),
-              color: Colors.green,
-              onPressed: () {},
-              icon: Icon(
-                FlutterIcons.add_box_mdi,
-                color: Colors.white,
-              ),
-              label: Text("Add new to do ",
-                  style: TextStyle(
-                      color: Colors.white, fontSize: 18))),
-        ));
   }
 }
