@@ -20,12 +20,16 @@ class SubjectVM implements SubjectBase {
   SubjectVM(this.databaseHelper);
 
   @override
-  Future<void> addSubject(Subject value) async {
-    await Future.delayed(Duration(seconds: 2));
-    //save to sqflite
-    await databaseHelper.addSubject(value);
-    print("subject added to local sql Table");
-    await getInitDatas();
+  Future<void> addSubject(Subject subjectToAdd) async {
+    if (subjectToAdd.title.isEmpty) {
+      throw "subject title empty";
+    } else {
+      await Future.delayed(Duration(seconds: 2));
+      //save to sqflite
+      await databaseHelper.addSubject(subjectToAdd);
+      print("subject added to local sql Table");
+      await getInitDatas();
+    }
   }
 
   @override

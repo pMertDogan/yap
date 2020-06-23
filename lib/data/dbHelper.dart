@@ -40,9 +40,10 @@ class DatabaseHelper {
         });
   }
 
-  Future<void> singOut() {
-    database.then((db) {
-      db.transaction((txn) async {
+  Future<void> singOut() async {
+    //Maybe its not await, test it :)
+    database.then((db) async {
+      await db.transaction((txn) async {
         await txn.delete("user");
         await txn.delete("friends");
         await txn.delete("tags");
@@ -299,9 +300,9 @@ class DatabaseHelper {
         where: '"id" = ?', whereArgs: [subjectID]);
   }
 
-  Future<void> deleteSubjectByID(int subjectID) {
+  Future<void> deleteSubjectByID(int subjectID) async {
     //TODO check
-    database.then((db) async {
+    await database.then((db) async {
       await db.delete("subject", where: '"id" = ?', whereArgs: [subjectID]);
     });
   }
@@ -393,8 +394,8 @@ class DatabaseHelper {
     return await db.insert("todos", fixedQueryMap);
   }
 
-  Future<void> deleteToDoById(int todoID) {
-    database.then((db) async {
+  Future<void> deleteToDoById(int todoID) async {
+    await database.then((db) async {
       await db.delete("todos", where: '"id"=?', whereArgs: [todoID]);
     });
   }
