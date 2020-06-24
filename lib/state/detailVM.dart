@@ -1,4 +1,5 @@
 import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong/latlong.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 import 'package:todo/data/models/friend.dart';
 import 'package:todo/data/models/subject.dart';
@@ -60,5 +61,15 @@ class DetailVM {
     print("remove todo ıd " + todoID.toString());
     await subjectVM.setState((s) => s.deleteToDoById(todoID));
     subject.toDoList.removeWhere((element) => element.id == todoID);
+  }
+
+  Future<void> updateLocation(double lat, lng, String locationName) {
+    subject.locationName = locationName;
+    subject.latLngList = <double>[lat, lng];
+    if (mapController.ready) {
+      mapController.move(LatLng(lat, lng), 13);
+    }
+    subjectVM.setState(
+        (s) => s.updateSubjectLocation(subject.id, lat, lng, locationName));
   }
 }

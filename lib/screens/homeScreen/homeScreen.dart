@@ -2,14 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
+import 'package:todo/screens/homeScreen/FAButton.dart';
 import 'package:todo/screens/homeScreen/bottomMenu.dart';
 import 'package:todo/screens/homeScreen/daysUI.dart';
 import 'package:todo/screens/homeScreen/subjectCards.dart';
 import 'package:todo/screens/homeScreen/topRow.dart';
-import 'package:todo/state/addSubjectVM.dart';
 import 'package:todo/state/subjectVM.dart';
 import 'package:todo/utility/colors.dart';
-import 'package:todo/widgets/addSubjectSheet/addSubjectSheet.dart';
 import 'package:todo/widgets/tagChips.dart';
 
 import 'infoAndFilterRow.dart';
@@ -34,10 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: grey,
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: FAB(),
-        bottomNavigationBar: BottomMenu(
-          blue: blue,
-          grey: grey,
-        ),
+        bottomNavigationBar: BottomMenuUI(),
         body: ListView(
           shrinkWrap: true,
           children: <Widget>[
@@ -58,40 +54,6 @@ class _HomeScreenState extends State<HomeScreen> {
             )
           ],
         ),
-      ),
-    );
-  }
-}
-
-class FAB extends StatelessWidget {
-  const FAB({
-    Key key,
-  }) : super(key: key);
-
-  final Color sheetBGColor = UIColors.darkerPurple;
-
-  @override
-  Widget build(BuildContext context) {
-    return Injector(
-      inject: [
-        Inject<AddSubjectVM>(() => AddSubjectVM()),
-      ],
-      builder: (context) => FloatingActionButton(
-        child: Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
-        backgroundColor: Colors.blueGrey,
-        onPressed: () => showModalBottomSheet(
-            //enable scroll down to close
-            isScrollControlled: true,
-            backgroundColor: sheetBGColor,
-            shape: ContinuousRectangleBorder(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(50))),
-            context: context,
-            builder: (context) {
-              return AddSubjectSheet();
-            }),
       ),
     );
   }

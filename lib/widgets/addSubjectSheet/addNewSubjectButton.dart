@@ -12,57 +12,50 @@ class AddNewSubjectButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Builder(
-      builder: (contextBuilder) => Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: InkWell(
-          onTap: () {
-            final subjectVM = RM.get<SubjectVM>();
-            final a = RM.get<AddSubjectVM>();
-            if (!subjectVM.isWaiting) {
-              subjectVM.setState(
-                (s) async {
-                  a.state.addTagsToSubject();
-                  await s.addSubject(a.state.subject);
-                  //remove tags for new subjects
-                  a.state.clearFields();
-                },
-                onData: (_, __) => Navigator.pop(context),
-                onError: (context, error) {
-                  Scaffold.of(contextBuilder).showSnackBar(SnackBar(
-                    content: Text(error.toString()),
-                  ));
-                },
-              );
-            }
-          },
-          child: AnimatedContainer(
-            duration: Duration(milliseconds: 250),
-            decoration: BoxDecoration(
-                color: UIColors.todoOrange,
-                borderRadius: BorderRadius.circular(8)),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 30),
-              child: StateBuilder<SubjectVM>(
-                observe: () => RM.get<SubjectVM>(),
-                builderWithChild: (context, subjectVMRM, child) {
-                  return subjectVMRM.isWaiting
-                      ? OrangeLoadingIndicator()
-                      : child;
-                },
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text(
-                      "All is well",
-                      style: TextStyle(fontSize: 25, color: Colors.white),
-                    ),
-                    Icon(
-                      Icons.check,
-                      color: Colors.green,
-                    ),
-                  ],
-                ),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 250),
+        decoration: BoxDecoration(
+            color: UIColors.todoOrange, borderRadius: BorderRadius.circular(8)),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 30),
+          child: StateBuilder<SubjectVM>(
+            observe: () => RM.get<SubjectVM>(),
+            builderWithChild: (context, subjectVMRM, child) {
+              return subjectVMRM.isWaiting ? OrangeLoadingIndicator() : child;
+            },
+            child: InkWell(
+              onTap: () {
+                final subjectVM = RM.get<SubjectVM>();
+                final a = RM.get<AddSubjectVM>();
+                subjectVM.setState(
+                  (s) async {
+                    a.state.addTagsToSubject();
+                    await s.addSubject(a.state.subject);
+                    //remove tags for new subjects
+                    a.state.clearFields();
+                  },
+                  onData: (_, __) => Navigator.pop(context),
+                  onError: (context, error) {
+                    Scaffold.of(context).showSnackBar(SnackBar(
+                      content: Text(error.toString()),
+                    ));
+                  },
+                );
+              },
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text(
+                    "All is well",
+                    style: TextStyle(fontSize: 25, color: Colors.white),
+                  ),
+                  Icon(
+                    Icons.check,
+                    color: Colors.green,
+                  ),
+                ],
               ),
             ),
           ),

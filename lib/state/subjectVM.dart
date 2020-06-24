@@ -22,8 +22,11 @@ class SubjectVM implements SubjectBase {
   @override
   Future<void> addSubject(Subject subjectToAdd) async {
     if (subjectToAdd.title.isEmpty) {
-      throw "subject title empty";
+      throw "Subject title empty";
+    } else if (subjectToAdd.toDoList[0].title.isEmpty) {
+      throw "Todo name empty";
     } else {
+      //fake delay
       await Future.delayed(Duration(seconds: 2));
       //save to sqflite
       await databaseHelper.addSubject(subjectToAdd);
@@ -69,6 +72,7 @@ class SubjectVM implements SubjectBase {
   Future<void> updateSubjectTags(int subjectID, Set<String> subjectTags) async {
     await databaseHelper.updateSubjectTags(subjectID, subjectTags);
     await databaseHelper.removeUnusedTags();
+    await getInitDatas();
     await getSelectedDayData(filterByTags: true);
   }
 
@@ -109,6 +113,7 @@ class SubjectVM implements SubjectBase {
       Set<String> selectedTags = List.generate(tagChipsSelect.length, (index) {
         return tags.elementAt(tagChipsSelect.elementAt(index));
       }).toSet();
+      print("selected Tags" + selectedTags.toString() + "SubjectVM");
       //get filtered tags
       if (selectedStartDayIndex == 0) {
         listOfSubjects = await databaseHelper.getSubjects(
@@ -119,8 +124,6 @@ class SubjectVM implements SubjectBase {
             startDate: listOfSubjectsStartDates[selectedStartDayIndex - 1],
             tags: selectedTags); //?? <Subject>[];
       }
-//      print("subjectVM  selectedDay subject uzunluğu " +
-//          listOfSubjects.length.toString());
     }
     //just get subjects by start_date
     else {
@@ -136,6 +139,13 @@ class SubjectVM implements SubjectBase {
 
   Future<void> deleteToDoById(int todoID) async {
     await databaseHelper.deleteToDoById(todoID);
+    await getSelectedDayData(filterByTags: true);
+  }
+
+  Future<void> updateSubjectLocation(
+      int subjectID, double lat, lng, String locationName) async {
+    await databaseHelper.updateSubjectLocation(
+        subjectID, lat, lng, locationName);
     await getSelectedDayData(filterByTags: true);
   }
 }

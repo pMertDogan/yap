@@ -25,7 +25,7 @@ class ToDoUI extends StatelessWidget {
             ToDo todo = model.state.subject.toDoList[index];
             return Theme(
               data: Theme.of(context).copyWith(
-                //listtile expanded icon
+                //listTile expanded icon
                 accentColor: Colors.orange,
                 //for listTile collapse icon
                 unselectedWidgetColor: Colors.white,

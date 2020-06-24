@@ -27,7 +27,7 @@ class DetailScreen extends StatelessWidget {
                   ContributorsUI(subject: subject),
                   ExplanationUI(subject: subject),
                   MiddleButtons(),
-                  MapUI(subject: subject),
+                  MapUI(),
                   AddTodoButon(),
                   ToDoUI(),
                 ],

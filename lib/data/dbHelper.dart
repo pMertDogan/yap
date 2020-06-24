@@ -306,6 +306,7 @@ class DatabaseHelper {
       await db.delete("subject", where: '"id" = ?', whereArgs: [subjectID]);
     });
   }
+
 //TAGS
 
   Future<void> updateSubjectTags(int subjectID, Set<String> subjectTags) async {
@@ -442,5 +443,17 @@ class DatabaseHelper {
   Future<void> addFriend(Friend friend) async {
     final Database db = await database;
     await db.insert("friends", friend.toMap());
+  }
+
+  Future<void> updateSubjectLocation(
+      int subjectID, double lat, lng, String locationName) async {
+    final Database db = await database;
+    Map<String, dynamic> mapValue = {
+      "lat": lat.toString(),
+      "lng": lng.toString(),
+      "location_name": locationName
+    };
+    await db
+        .update("subject", mapValue, where: '"id" = ?', whereArgs: [subjectID]);
   }
 }

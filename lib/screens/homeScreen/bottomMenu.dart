@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:todo/screens/friendsScreen/friendsScreen.dart';
+import 'package:todo/utility/colors.dart';
 
-class BottomMenu extends StatelessWidget {
-  const BottomMenu({
+class BottomMenuUI extends StatelessWidget {
+  const BottomMenuUI({
     Key key,
-    @required this.blue,
-    @required this.grey,
   }) : super(key: key);
 
-  final Color blue;
-  final Color grey;
+  final Color blue = UIColors.darkBlue;
+  final Color grey = UIColors.grey;
 
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
       color: blue,
-      //notchMargin: 5,
-      //shape: CircularNotchedRectangle(),
       child: Container(
         height: 50,
         child: Row(
@@ -42,7 +40,13 @@ class BottomMenu extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.only(left: 20),
                 child: FlatButton.icon(
-                    onPressed: () {},
+                    onPressed: () {
+                      return Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => FriendsScreen(),
+                          ));
+                    },
                     icon: Icon(
                       Icons.supervisor_account,
                       color: grey,

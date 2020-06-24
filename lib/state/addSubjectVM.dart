@@ -31,7 +31,7 @@ class AddSubjectVM {
 
   AddSubjectVM() {
     RM.get<SubjectVM>().listenToRM((subjectVM) {
-     // print("addSubjectVM updated tags : " + subjectVM.state.tags.toString());
+      // print("addSubjectVM updated tags : " + subjectVM.state.tags.toString());
       tags = subjectVM.state.allTags ?? <String>{};
     });
 
@@ -85,6 +85,7 @@ class AddSubjectVM {
 
   void addTagsToSubject() {
     //add selected tags to Subject
+    subject.tags.clear();
     if (tagChipsSelect.isNotEmpty) {
       tagChipsSelect
           .forEach((index) => subject.tags.add(tags.elementAt(index)));

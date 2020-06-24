@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_mapbox_autocomplete/flutter_mapbox_autocomplete.dart';
-import 'package:latlong/latlong.dart';
 import 'package:states_rebuilder/states_rebuilder.dart';
 import 'package:todo/state/detailVM.dart';
 import 'package:todo/utility/apiKeys.dart';
@@ -21,11 +20,9 @@ class MiddleButtons extends StatelessWidget {
         onSelect: (place) {
           double lat = place.geometry.coordinates[1],
               lng = place.geometry.coordinates[0];
-          RM.get<DetailVM>().setState((s) {
-            s.subject.locationName = place.placeName;
-            s.subject.latLngList = <double>[lat, lng];
-            s.mapController.move(LatLng(lat, lng), 13);
-          });
+          RM.get<DetailVM>().setState((s) async {
+            await s.updateLocation(lat, lng, place.placeName);
+          }, filterTags: ["maps"]);
         },
         limit: 10,
       ),
